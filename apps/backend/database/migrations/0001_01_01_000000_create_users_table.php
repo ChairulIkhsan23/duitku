@@ -17,8 +17,14 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('currency')->default('IDR')->comment('User default currency');
+            $table->decimal('initial_balance', 15, 2)->default(0)->comment('Starting balance for finance tracking');
             $table->rememberToken();
             $table->timestamps();
+
+            // Indexes untuk performa query
+            $table->index('email');
+            $table->index('created_at');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
