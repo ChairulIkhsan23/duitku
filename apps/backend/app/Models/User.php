@@ -12,10 +12,11 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Laravel\Sanctum\HasApiTokens;
 
+
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasUuids, Notifiable;
+    use HasApiTokens, HasUuids, Notifiable, HasFactory;
 
     protected $keyType = 'string';
     public $incrementing = false;
@@ -102,5 +103,18 @@ class User extends Authenticatable
     public function keywordMappings()
     {
         return $this->hasMany(KeywordMapping::class, 'created_by');
+    }
+
+    public function getCurrentBalanceAttribute()
+    {
+        $totalIncome = $this->transactions()
+            ->where('type', 'income')
+            ->sum('amount');
+            
+        $totalExpense = $this->transactions()
+            ->where('type', 'expense')
+            ->sum('amount');
+            
+        return $this->initial_balance + $totalIncome - $totalExpense;
     }
 }

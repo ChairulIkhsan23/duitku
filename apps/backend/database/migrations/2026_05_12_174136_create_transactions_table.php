@@ -32,7 +32,6 @@ return new class extends Migration
             $table->index(['user_id', 'type']);
             $table->index(['user_id', 'category_id']);
             $table->index('date');
-            $table->fullText('note');
         });
     }
 
