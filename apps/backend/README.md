@@ -1,23 +1,419 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# DUITKU Backend API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> Personal Finance Management Application - REST API Backend built with Laravel 13 & PostgreSQL
 
-## About Laravel
+## 🚀 Quick Start
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Prerequisites
+- PHP 8.3+
+- Composer
+- PostgreSQL 12+
+- Node.js 18+ (for frontend assets)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Installation
+
+1. **Clone repository**
+```bash
+git clone <repo-url>
+cd apps/backend
+```
+
+2. **Install dependencies**
+```bash
+composer install
+npm install
+```
+
+3. **Environment setup**
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+4. **Configure database di `.env`**
+```env
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=db_duitku
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+```
+
+5. **Run migrations**
+```bash
+php artisan migrate
+```
+
+6. **Start development server**
+```bash
+php artisan serve
+```
+
+Server akan berjalan di `http://localhost:8000`
+
+---
+
+## 📚 Documentation
+
+### API Documentation
+- **Main Guide**: [API_DOCUMENTATION.md](./API_DOCUMENTATION.md)
+- **Endpoints**: 
+  - `POST /api/register` - Register new user
+  - `POST /api/login` - Login user
+  - `GET /api/me` - Get current user profile
+  - `POST /api/logout` - Logout user
+
+### Architecture
+- **Design Pattern**: [ARCHITECTURE.md](./ARCHITECTURE.md)
+- **Clean Architecture**: Service + Controller + Model separation
+- **Scalability**: Ready for AI features, insights, and gamification
+
+### Testing
+- **Postman Collection**: [DUITKU-Auth-API.postman_collection.json](../DUITKU-Auth-API.postman_collection.json)
+
+---
+
+## 🏗️ Tech Stack
+
+| Component | Technology |
+|-----------|------------|
+| Framework | Laravel 13 |
+| Database | PostgreSQL |
+| Authentication | Laravel Sanctum |
+| API Style | REST |
+| Architecture | Clean Architecture |
+
+---
+
+## 📁 Project Structure
+
+```
+app/
+├── Services/              # Business Logic Layer
+├── Http/
+│   ├── Controllers/       # HTTP Request Handlers
+│   ├── Requests/          # Form Validation
+│   └── Resources/         # API Response Formatters
+├── Models/                # Database Models
+└── Exceptions/            # Custom Exceptions
+
+config/
+└── sanctum.php            # Authentication Config
+
+database/
+├── migrations/            # Schema Migrations
+├── factories/             # Model Factories
+└── seeders/               # Database Seeders
+
+routes/
+└── api.php                # API Routes
+
+tests/
+├── Feature/               # Feature Tests
+└── Unit/                  # Unit Tests
+```
+
+---
+
+## 🔐 Authentication
+
+DUITKU menggunakan **Laravel Sanctum** untuk API authentication:
+
+### Token-Based Auth
+```bash
+# Get token via login
+curl -X POST http://localhost:8000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"password123"}'
+
+# Use token for protected routes
+curl -X GET http://localhost:8000/api/me \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### Protected Routes
+Routes di `/api` yang membutuhkan authentication:
+- `GET /api/me` - Get current user
+- `POST /api/logout` - Logout
+
+---
+
+## 🛠️ Development
+
+### Available Commands
+
+```bash
+# Development server dengan auto-reload
+php artisan serve
+
+# Watch assets changes
+npm run dev
+
+# Run migrations
+php artisan migrate
+
+# Fresh migration (⚠️ clears data)
+php artisan migrate:fresh
+
+# Run tests
+php artisan test
+
+# Check code style
+composer pint
+
+# Format code
+composer pint --fix
+
+# Run tinker REPL
+php artisan tinker
+
+# List all routes
+php artisan route:list
+```
+
+### Development Workflow
+
+```bash
+# Terminal 1: Web server
+php artisan serve
+
+# Terminal 2: Asset watcher
+npm run dev
+
+# Terminal 3: Queue listener (if using jobs)
+php artisan queue:listen
+
+# Terminal 4: Laravel Pail (logs)
+php artisan pint --timeout=0
+```
+
+---
+
+## 🧪 Testing
+
+### Run Tests
+```bash
+# All tests
+php artisan test
+
+# Spesifik test class
+php artisan test tests/Feature/AuthTest.php
+
+# With coverage
+php artisan test --coverage
+```
+
+### Test Structure
+```
+tests/
+├── Feature/
+│   ├── AuthTest.php           # Authentication flow tests
+│   └── RegistrationTest.php   # Registration specific tests
+└── Unit/
+    └── Services/
+        └── AuthServiceTest.php # Unit tests untuk service
+```
+
+---
+
+## 📊 Database
+
+### Schema Management
+
+```bash
+# Create new migration
+php artisan make:migration create_table_name
+
+# Run migrations
+php artisan migrate
+
+# Rollback last migration
+php artisan migrate:rollback
+
+# Rollback all & re-run
+php artisan migrate:fresh
+
+# Seed database
+php artisan db:seed
+```
+
+### Users Table
+```sql
+- id: bigint (PK)
+- name: string
+- email: string (unique)
+- password: string (hashed)
+- currency: string (default: IDR)
+- initial_balance: decimal
+- email_verified_at: timestamp
+- timestamps (created_at, updated_at)
+```
+
+---
+
+## 🔒 Security
+
+### Best Practices Implemented
+
+✅ **Password Security**
+- Bcrypt hashing (BCRYPT_ROUNDS=12)
+- Minimum 8 characters
+- Password confirmation required on register
+
+✅ **API Security**
+- Sanctum token authentication
+- CORS configuration
+- CSRF protection available
+
+✅ **Data Validation**
+- Server-side validation dengan FormRequest
+- Email unique constraint
+- Type casting & database constraints
+
+✅ **Exception Handling**
+- Proper HTTP status codes
+- Consistent error responses
+- No sensitive data in errors
+
+---
+
+## 🚀 Deployment
+
+### Production Checklist
+
+```bash
+# Pre-deployment
+composer install --optimize-autoloader --no-dev
+npm run build
+php artisan migrate --force
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# Environment
+APP_ENV=production
+APP_DEBUG=false
+```
+
+### Environment Variables (.env)
+```env
+APP_NAME=DUITKU
+APP_ENV=production
+APP_DEBUG=false
+APP_KEY=base64:xxxxx
+APP_URL=https://api.duitku.com
+
+DB_CONNECTION=pgsql
+DB_HOST=your-db-host
+DB_DATABASE=db_duitku
+DB_USERNAME=postgres
+DB_PASSWORD=your-secure-password
+
+SANCTUM_STATEFUL_DOMAINS=duitku.com,www.duitku.com
+```
+
+---
+
+## 📝 API Response Format
+
+### Success Response (201 Created)
+```json
+{
+    "message": "Registrasi berhasil",
+    "data": {
+        "user": {
+            "id": 1,
+            "name": "John Doe",
+            "email": "john@example.com",
+            "currency": "IDR",
+            "initial_balance": "1000000.00",
+            "created_at": "2024-05-12T10:00:00.000000Z"
+        },
+        "token": "1|abcdefghijk..."
+    }
+}
+```
+
+### Error Response (401 Unauthorized)
+```json
+{
+    "message": "Login gagal",
+    "errors": {
+        "email": ["Kredensial tidak sesuai"]
+    }
+}
+```
+
+---
+
+## 🔗 Related Documentation
+
+- [API Reference](./API_DOCUMENTATION.md) - Complete endpoint documentation
+- [Architecture Guide](./ARCHITECTURE.md) - System design & clean architecture
+- [Laravel Documentation](https://laravel.com/docs) - Official Laravel docs
+- [Sanctum Docs](https://laravel.com/docs/sanctum) - Authentication docs
+- [PostgreSQL Docs](https://www.postgresql.org/docs) - Database docs
+
+---
+
+## 🤝 Contributing
+
+1. Create feature branch: `git checkout -b feature/feature-name`
+2. Commit changes: `git commit -am 'Add feature'`
+3. Push to branch: `git push origin feature/feature-name`
+4. Create Pull Request
+
+### Code Standards
+- Follow PSR-12 coding standard
+- Use type hints for all parameters
+- Add docstring untuk public methods
+- Write tests untuk new features
+
+---
+
+## 📧 Support
+
+For questions or issues:
+1. Check [API_DOCUMENTATION.md](./API_DOCUMENTATION.md)
+2. Check [ARCHITECTURE.md](./ARCHITECTURE.md)
+3. Open an issue on GitHub
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see [LICENSE](../../LICENSE) file for details.
+
+---
+
+## 🎯 Next Features
+
+Roadmap untuk masa depan:
+
+```
+Phase 2 - Core Features
+├── Transaction management (income/expense)
+├── Budget management
+├── Category system
+└── Dashboard analytics
+
+Phase 3 - Advanced Features
+├── AI-powered insights
+├── Predictive analytics
+├── Gamification
+└── Mobile app sync
+
+Phase 4 - Enterprise
+├── Multi-user family accounts
+├── Expense splitting
+├── Invoice generation
+└── Export reports
+```
+
+---
+
+**Made with ❤️ for personal finance management**
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
