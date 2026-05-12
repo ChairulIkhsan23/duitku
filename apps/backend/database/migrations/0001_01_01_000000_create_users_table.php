@@ -12,29 +12,34 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('currency')->default('IDR')->comment('User default currency');
-            $table->decimal('initial_balance', 15, 2)->default(0)->comment('Starting balance for finance tracking');
+            $table->string('currency_code', 3)->default('IDR');
+            $table->decimal('initial_balance', 15, 2)->default(0);
+            $table->integer('streak_days')->default(0);
+            $table->date('last_transaction_date')->nullable();
+            $table->date('last_streak_date')->nullable();
+            $table->string('onboarding_template')->default('standard');
+            $table->boolean('is_premium')->default(false);
+            $table->timestamp('premium_until')->nullable();
+            $table->string('notification_token')->nullable();
+            $table->json('settings')->nullable();
+            $table->string('avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();
-
-            // Indexes untuk performa query
-            $table->index('email');
-            $table->index('created_at');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
+            $table->uuid('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
 
         Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->uuid('id')->primary();
             $table->foreignId('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
