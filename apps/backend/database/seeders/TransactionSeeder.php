@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Category;
 use App\Models\Transaction;
@@ -13,42 +12,67 @@ use Illuminate\Support\Str;
 class TransactionSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Seed data transaksi untuk semua user.
      */
     public function run(): void
     {
+        /**
+         * Ambil semua user
+         */
         $users = User::all();
-        
+
         if ($users->isEmpty()) {
             $this->command->error('Tidak ada user! Jalankan UserSeeder dulu!');
             return;
         }
-        
-        $incomeNotes = ['Gaji bulanan', 'Bonus tahunan', 'THR', 'Hasil freelance', 'Investasi cair', 'Cashback', 'Hadiah ulang tahun', 'Jual barang bekas'];
-        $expenseNotes = ['Starbucks', 'Makan siang', 'Gojek', 'Bensin', 'Listrik', 'Netflix', 'Belanja bulanan', 'Parkir', 'Pulsa', 'Makan malam', 'Kopi', 'Nonton bioskop', 'Beli baju', 'Olahraga', 'Obat', 'Donasi'];
-        
+
+        /**
+         * Daftar catatan transaksi income
+         */
+        $incomeNotes = [
+            'Gaji bulanan', 'Bonus tahunan', 'THR', 'Hasil freelance',
+            'Investasi cair', 'Cashback', 'Hadiah ulang tahun', 'Jual barang bekas'
+        ];
+
+        /**
+         * Daftar catatan transaksi expense
+         */
+        $expenseNotes = [
+            'Starbucks', 'Makan siang', 'Gojek', 'Bensin', 'Listrik',
+            'Netflix', 'Belanja bulanan', 'Parkir', 'Pulsa', 'Makan malam',
+            'Kopi', 'Nonton bioskop', 'Beli baju', 'Olahraga', 'Obat', 'Donasi'
+        ];
+
         $totalIncome = 0;
         $totalExpense = 0;
-        
+
         foreach ($users as $user) {
+
             $this->command->info('Processing user: ' . $user->name);
-            
-            // Buat 5-10 transaksi income
+
+            /**
+             * =========================
+             * Income Transactions
+             * =========================
+             */
+
             $incomeCount = rand(5, 10);
+
             $incomeCategories = Category::where('type', 'income')
                 ->where('is_default', true)
                 ->get();
-            
+
             for ($i = 0; $i < $incomeCount; $i++) {
+
                 $date = now()->subDays(rand(0, 30));
                 $amount = rand(100000, 15000000);
-                
+
                 Transaction::create([
                     'id' => Str::uuid(),
                     'user_id' => $user->id,
                     'category_id' => $incomeCategories->random()->id,
                     'amount' => $amount,
-                    'type' => TransactionType::INCOME->value, 
+                    'type' => TransactionType::INCOME->value,
                     'date' => $date,
                     'note' => $incomeNotes[array_rand($incomeNotes)],
                     'photo_url' => null,
@@ -58,25 +82,33 @@ class TransactionSeeder extends Seeder
                     'created_at' => $date,
                     'updated_at' => $date,
                 ]);
+
                 $totalIncome++;
             }
-            
-            // Buat 20-40 transaksi expense
+
+            /**
+             * =========================
+             * Expense Transactions
+             * =========================
+             */
+
             $expenseCount = rand(20, 40);
+
             $expenseCategories = Category::where('type', 'expense')
                 ->where('is_default', true)
                 ->get();
-            
+
             for ($i = 0; $i < $expenseCount; $i++) {
+
                 $date = now()->subDays(rand(0, 30));
                 $amount = rand(5000, 2000000);
-                
+
                 Transaction::create([
                     'id' => Str::uuid(),
                     'user_id' => $user->id,
                     'category_id' => $expenseCategories->random()->id,
                     'amount' => $amount,
-                    'type' => TransactionType::EXPENSE->value, 
+                    'type' => TransactionType::EXPENSE->value,
                     'date' => $date,
                     'note' => $expenseNotes[array_rand($expenseNotes)],
                     'photo_url' => null,
@@ -86,14 +118,18 @@ class TransactionSeeder extends Seeder
                     'created_at' => $date,
                     'updated_at' => $date,
                 ]);
+
                 $totalExpense++;
             }
         }
 
+        /**
+         * Summary hasil seeding
+         */
         $this->command->newLine();
-        $this->command->info('✅ ' . Transaction::count() . ' transaksi berhasil dibuat.');
-        $this->command->info('   📈 Income: ' . $totalIncome . ' transaksi');
-        $this->command->info('   📉 Expense: ' . $totalExpense . ' transaksi');
+        $this->command->info('Transaksi berhasil dibuat: ' . Transaction::count());
+        $this->command->info('Income: ' . $totalIncome);
+        $this->command->info('Expense: ' . $totalExpense);
         $this->command->newLine();
     }
 }

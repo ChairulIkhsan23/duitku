@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Budget;
 use App\Models\Category;
@@ -12,21 +11,34 @@ use Illuminate\Support\Str;
 class BudgetSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Seed data budget untuk semua user.
      */
     public function run(): void
     {
+        /**
+         * Ambil semua user
+         */
         $users = User::all();
+
+        /**
+         * Periode budget: bulan berjalan
+         */
         $currentMonth = now()->startOfMonth()->format('Y-m-d');
-        
+
         foreach ($users as $user) {
-            // Ambil kategori expense default
+
+            /**
+             * Ambil semua kategori expense default
+             */
             $expenseCategories = Category::where('type', 'expense')
                 ->where('is_default', true)
                 ->get();
-            
+
             foreach ($expenseCategories as $category) {
-                // Hanya buat budget untuk kategori yang punya budget_default
+
+                /**
+                 * Hanya buat budget jika kategori memiliki default budget
+                 */
                 if ($category->budget_default) {
                     Budget::create([
                         'id' => Str::uuid(),
@@ -43,6 +55,9 @@ class BudgetSeeder extends Seeder
             }
         }
 
-        $this->command->info('✅ ' . Budget::count() . ' budget berhasil dibuat.');
+        /**
+         * Info jumlah budget yang berhasil dibuat
+         */
+        $this->command->info('Budget berhasil dibuat: ' . Budget::count());
     }
 }
