@@ -8,73 +8,88 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-/**
- * @extends Factory<Budget>
- */
 class BudgetFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
     protected $model = Budget::class;
 
     public function definition(): array
     {
-        // Ambil category expense
-        $category = Category::where('type', 'expense')
-            ->where('is_default', true)
-            ->inRandomOrder()
-            ->first();
-        
-        if (!$category) {
-            $category = Category::factory()->create(['type' => 'expense']);
-        }
-        
+        // Always create a unique category for each budget to avoid unique constraint violations
+        // when multiple budgets are created with the same month_year
+        $category = Category::factory()->create([
+            'type' => 'expense',
+        ]);
+
         $limitAmount = $this->faker->numberBetween(500000, 5000000);
-        $spentAmount = $this->faker->numberBetween(0, $limitAmount * 1.2);
-        
+
         return [
-            'id' => Str::uuid(),
+            'id' => (string) Str::uuid(),
+
             'user_id' => User::factory(),
+
             'category_id' => $category->id,
-            'month_year' => $this->faker->dateTimeBetween('-2 months', 'now')->format('Y-m-01'),
+
+            // ✅ FIX: format harus Y-m-d (start of month, untuk konsistensi dengan service)
+            'month_year' => $this->faker
+                ->dateTimeBetween('-2 months', 'now')
+                ->format('Y-m-01'),  // Always first day of month
+
             'limit_amount' => $limitAmount,
-            'spent_amount' => $spentAmount,
-            'notification_sent' => json_encode([]),
+
+            'spent_amount' => $this->faker->numberBetween(
+                0,
+                (int) ($limitAmount * 1.2)
+            ),
+
+            'notification_sent' => [],
+
             'created_at' => now(),
             'updated_at' => now(),
         ];
     }
 
-    // Budget yang sudah overspent
+    // -------------------------
+    // STATE: overspent
+    // -------------------------
     public function overspent(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'spent_amount' => $this->faker->numberBetween(
-                $attributes['limit_amount'] + 1, 
-                $attributes['limit_amount'] * 1.5
-            ),
-        ]);
+        return $this->state(function (array $attributes) {
+            return [
+                'spent_amount' => $this->faker->numberBetween(
+                    $attributes['limit_amount'] + 1,
+                    (int) ($attributes['limit_amount'] * 1.5)
+                ),
+            ];
+        });
     }
-    
-    // Budget yang aman (belum 80%)
+
+    // -------------------------
+    // STATE: safe (<70%)
+    // -------------------------
     public function safe(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'spent_amount' => $this->faker->numberBetween(0, $attributes['limit_amount'] * 0.7),
-        ]);
+        return $this->state(function (array $attributes) {
+            return [
+                'spent_amount' => $this->faker->numberBetween(
+                    0,
+                    (int) ($attributes['limit_amount'] * 0.7)
+                ),
+            ];
+        });
     }
-    
-    // Budget yang warning (80-99%)
+
+    // -------------------------
+    // STATE: warning (80–99%)
+    // -------------------------
     public function warning(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'spent_amount' => $this->faker->numberBetween(
-                $attributes['limit_amount'] * 0.8, 
-                $attributes['limit_amount'] * 0.99
-            ),
-        ]);
+        return $this->state(function (array $attributes) {
+            return [
+                'spent_amount' => $this->faker->numberBetween(
+                    (int) ($attributes['limit_amount'] * 0.8),
+                    (int) ($attributes['limit_amount'] * 0.99)
+                ),
+            ];
+        });
     }
 }

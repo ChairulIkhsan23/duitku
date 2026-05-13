@@ -28,10 +28,8 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('restrict');
             
-            $table->index(['user_id', 'date']);
-            $table->index(['user_id', 'type']);
+            $table->index(['user_id', 'date', 'type']);
             $table->index(['user_id', 'category_id']);
-            $table->index('date');
         });
     }
 
