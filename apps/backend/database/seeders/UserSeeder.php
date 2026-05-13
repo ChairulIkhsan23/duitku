@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Illuminate\Support\Str;
@@ -10,11 +9,13 @@ use Illuminate\Support\Str;
 class UserSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Seed data user demo aplikasi.
      */
     public function run(): void
     {
-        // User Demo 1 - Budget Santai
+        /**
+         * User demo: Budget Santai
+         */
         User::create([
             'id' => Str::uuid(),
             'name' => 'Budi Santoso',
@@ -27,10 +28,15 @@ class UserSeeder extends Seeder
             'last_streak_date' => now(),
             'onboarding_template' => 'standard',
             'is_premium' => true,
-            'settings' => json_encode(['notifications' => true, 'theme' => 'dark']),
+            'settings' => json_encode([
+                'notifications' => true,
+                'theme' => 'dark'
+            ]),
         ]);
 
-        // User Demo 2 - Rajin Nabung
+        /**
+         * User demo: Rajin Nabung
+         */
         User::create([
             'id' => Str::uuid(),
             'name' => 'Siti Aminah',
@@ -43,10 +49,15 @@ class UserSeeder extends Seeder
             'last_streak_date' => now(),
             'onboarding_template' => 'freelancer',
             'is_premium' => true,
-            'settings' => json_encode(['notifications' => true, 'theme' => 'light']),
+            'settings' => json_encode([
+                'notifications' => true,
+                'theme' => 'light'
+            ]),
         ]);
 
-        // User Demo 3 - Pemula
+        /**
+         * User demo: Pemula
+         */
         User::create([
             'id' => Str::uuid(),
             'name' => 'Charlie Brown',
@@ -59,10 +70,15 @@ class UserSeeder extends Seeder
             'last_streak_date' => null,
             'onboarding_template' => 'mahasiswa',
             'is_premium' => false,
-            'settings' => json_encode(['notifications' => true, 'theme' => 'light']),
+            'settings' => json_encode([
+                'notifications' => true,
+                'theme' => 'light'
+            ]),
         ]);
 
-        // User Demo 4 - Freelancer Aktif
+        /**
+         * User demo: Freelancer aktif
+         */
         User::create([
             'id' => Str::uuid(),
             'name' => 'Denny Wirawan',
@@ -75,10 +91,15 @@ class UserSeeder extends Seeder
             'last_streak_date' => now(),
             'onboarding_template' => 'freelancer',
             'is_premium' => true,
-            'settings' => json_encode(['notifications' => true, 'theme' => 'dark']),
+            'settings' => json_encode([
+                'notifications' => true,
+                'theme' => 'dark'
+            ]),
         ]);
 
-        // User Demo 5 - Pengeluaran Besar
+        /**
+         * User demo: Pengeluaran besar
+         */
         User::create([
             'id' => Str::uuid(),
             'name' => 'Eka Putri',
@@ -91,9 +112,15 @@ class UserSeeder extends Seeder
             'last_streak_date' => now(),
             'onboarding_template' => 'standard',
             'is_premium' => false,
-            'settings' => json_encode(['notifications' => false, 'theme' => 'light']),
+            'settings' => json_encode([
+                'notifications' => false,
+                'theme' => 'light'
+            ]),
         ]);
 
-        $this->command->info('✅ ' . User::count() . ' user berhasil dibuat.');
+        /**
+         * Summary hasil seeding
+         */
+        $this->command->info('User berhasil dibuat: ' . User::count());
     }
 }

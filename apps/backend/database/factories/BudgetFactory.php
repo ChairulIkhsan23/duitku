@@ -8,14 +8,27 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
+/**
+ * Factory untuk model Budget
+ *
+ * @extends Factory<Budget>
+ */
 class BudgetFactory extends Factory
 {
     protected $model = Budget::class;
 
+    /**
+     * Default state untuk data Budget.
+     *
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
-        // Always create a unique category for each budget to avoid unique constraint violations
-        // when multiple budgets are created with the same month_year
+        /**
+         * Membuat kategori expense untuk setiap budget.
+         * Digunakan untuk menghindari konflik unique constraint
+         * pada kombinasi data budget per bulan.
+         */
         $category = Category::factory()->create([
             'type' => 'expense',
         ]);
@@ -29,13 +42,21 @@ class BudgetFactory extends Factory
 
             'category_id' => $category->id,
 
-            // ✅ FIX: format harus Y-m-d (start of month, untuk konsistensi dengan service)
+            /**
+             * Periode bulan untuk budget.
+             * Selalu dinormalisasi ke tanggal 1 setiap bulan (Y-m-01)
+             * agar konsisten saat digunakan di query dan service.
+             */
             'month_year' => $this->faker
                 ->dateTimeBetween('-2 months', 'now')
-                ->format('Y-m-01'),  // Always first day of month
+                ->format('Y-m-01'),
 
             'limit_amount' => $limitAmount,
 
+            /**
+             * Total pengeluaran pada budget.
+             * Bisa melebihi limit untuk simulasi kondisi realistik.
+             */
             'spent_amount' => $this->faker->numberBetween(
                 0,
                 (int) ($limitAmount * 1.2)
@@ -48,9 +69,9 @@ class BudgetFactory extends Factory
         ];
     }
 
-    // -------------------------
-    // STATE: overspent
-    // -------------------------
+    /**
+     * State: budget overspent (melewati batas)
+     */
     public function overspent(): static
     {
         return $this->state(function (array $attributes) {
@@ -63,9 +84,9 @@ class BudgetFactory extends Factory
         });
     }
 
-    // -------------------------
-    // STATE: safe (<70%)
-    // -------------------------
+    /**
+     * State: budget aman (safe)
+     */
     public function safe(): static
     {
         return $this->state(function (array $attributes) {
@@ -78,9 +99,9 @@ class BudgetFactory extends Factory
         });
     }
 
-    // -------------------------
-    // STATE: warning (80–99%)
-    // -------------------------
+    /**
+     * State: budget warning
+     */
     public function warning(): static
     {
         return $this->state(function (array $attributes) {

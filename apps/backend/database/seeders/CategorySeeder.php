@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Category;
 use Illuminate\Support\Str;
@@ -10,12 +9,18 @@ use Illuminate\Support\Str;
 class CategorySeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Seed data kategori default sistem.
      */
     public function run(): void
     {
+        /**
+         * Daftar kategori default (income & expense)
+         */
         $categories = [
-            // Income Categories (10)
+
+            // =========================
+            // Income Categories
+            // =========================
             ['id' => Str::uuid(), 'name' => 'Gaji Pokok', 'type' => 'income', 'icon' => 'FaWallet', 'color' => '#4CAF50', 'budget_default' => null, 'is_default' => true, 'user_id' => null],
             ['id' => Str::uuid(), 'name' => 'Pendapatan Freelance', 'type' => 'income', 'icon' => 'FaLaptopCode', 'color' => '#2196F3', 'budget_default' => null, 'is_default' => true, 'user_id' => null],
             ['id' => Str::uuid(), 'name' => 'Investasi', 'type' => 'income', 'icon' => 'FaChartLine', 'color' => '#9C27B0', 'budget_default' => null, 'is_default' => true, 'user_id' => null],
@@ -26,8 +31,10 @@ class CategorySeeder extends Seeder
             ['id' => Str::uuid(), 'name' => 'Refund', 'type' => 'income', 'icon' => 'FaUndo', 'color' => '#607D8B', 'budget_default' => null, 'is_default' => true, 'user_id' => null],
             ['id' => Str::uuid(), 'name' => 'Uang Saku', 'type' => 'income', 'icon' => 'FaMoneyBillWave', 'color' => '#8BC34A', 'budget_default' => null, 'is_default' => true, 'user_id' => null],
             ['id' => Str::uuid(), 'name' => 'Lain-lain', 'type' => 'income', 'icon' => 'FaEllipsisH', 'color' => '#9E9E9E', 'budget_default' => null, 'is_default' => true, 'user_id' => null],
-            
-            // Expense Categories (20)
+
+            // =========================
+            // Expense Categories
+            // =========================
             ['id' => Str::uuid(), 'name' => 'Makan & Minum', 'type' => 'expense', 'icon' => 'FaUtensils', 'color' => '#FF5722', 'budget_default' => 1500000, 'is_default' => true, 'user_id' => null],
             ['id' => Str::uuid(), 'name' => 'Transportasi', 'type' => 'expense', 'icon' => 'FaCar', 'color' => '#2196F3', 'budget_default' => 500000, 'is_default' => true, 'user_id' => null],
             ['id' => Str::uuid(), 'name' => 'Hunian', 'type' => 'expense', 'icon' => 'FaHome', 'color' => '#795548', 'budget_default' => 2000000, 'is_default' => true, 'user_id' => null],
@@ -50,10 +57,16 @@ class CategorySeeder extends Seeder
             ['id' => Str::uuid(), 'name' => 'Lain-lain', 'type' => 'expense', 'icon' => 'FaEllipsisH', 'color' => '#9E9E9E', 'budget_default' => 100000, 'is_default' => true, 'user_id' => null],
         ];
 
+        /**
+         * Insert semua kategori ke database
+         */
         foreach ($categories as $category) {
             Category::create($category);
         }
 
-        $this->command->info('✅ ' . Category::count() . ' kategori berhasil dibuat.');
+        /**
+         * Info jumlah kategori yang berhasil dibuat
+         */
+        $this->command->info('Kategori berhasil dibuat: ' . Category::count());
     }
 }
