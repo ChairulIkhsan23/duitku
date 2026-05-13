@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->uuid('category_id');
-            $table->date('month_year');
+            $table->string('month_year');
             $table->decimal('limit_amount', 15, 2);
             $table->decimal('spent_amount', 15, 2)->default(0);
             $table->json('notification_sent')->default('[]');

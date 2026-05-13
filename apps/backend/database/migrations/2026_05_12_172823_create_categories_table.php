@@ -29,10 +29,9 @@ return new class extends Migration
                 ->onDelete('cascade');
             
             // Indexes
-            $table->unique(['name', 'user_id']);
+            $table->unique(['name', 'type', 'user_id']);
             $table->index(['type', 'user_id']);
             $table->index('is_default');
-            $table->index('name');
         });
     }
 

@@ -20,9 +20,11 @@ return new class extends Migration
             $table->string('icon', 50)->default('FaAward');
             $table->string('color', 7)->default('#FFD700');
             $table->integer('points')->default(10);
+            $table->string('trigger')->nullable();
             $table->timestamps();
             
             $table->index('slug');
+            
         });
     }
 
