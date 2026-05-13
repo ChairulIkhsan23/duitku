@@ -29,6 +29,7 @@ class BadgeSeeder extends Seeder
                 'icon' => 'FaWalking',
                 'color' => '#4CAF50',
                 'points' => 10,
+                'trigger' => 'transaction'
             ],
             [
                 'id' => Str::uuid(),
@@ -42,6 +43,7 @@ class BadgeSeeder extends Seeder
                 'icon' => 'FaShieldAlt',
                 'color' => '#2196F3',
                 'points' => 50,
+                'trigger' => 'transaction'
             ],
             [
                 'id' => Str::uuid(),
@@ -55,6 +57,7 @@ class BadgeSeeder extends Seeder
                 'icon' => 'FaSun',
                 'color' => '#FFC107',
                 'points' => 25,
+                'trigger' => 'transaction'
             ],
             [
                 'id' => Str::uuid(),
@@ -69,6 +72,7 @@ class BadgeSeeder extends Seeder
                 'icon' => 'FaPiggyBank',
                 'color' => '#FF9800',
                 'points' => 100,
+                'trigger' => 'transaction'
             ],
             [
                 'id' => Str::uuid(),
@@ -81,6 +85,7 @@ class BadgeSeeder extends Seeder
                 'icon' => 'FaThLarge',
                 'color' => '#9C27B0',
                 'points' => 75,
+                'trigger' => 'transaction'
             ],
             [
                 'id' => Str::uuid(),
@@ -95,6 +100,7 @@ class BadgeSeeder extends Seeder
                 'icon' => 'FaMoon',
                 'color' => '#3F51B5',
                 'points' => 30,
+                'trigger' => 'transaction'
             ],
             [
                 'id' => Str::uuid(),
@@ -108,6 +114,7 @@ class BadgeSeeder extends Seeder
                 'icon' => 'FaCrown',
                 'color' => '#FFD700',
                 'points' => 200,
+                'trigger' => 'transaction'
             ],
             [
                 'id' => Str::uuid(),
@@ -121,6 +128,7 @@ class BadgeSeeder extends Seeder
                 'icon' => 'FaChartLine',
                 'color' => '#00BCD4',
                 'points' => 40,
+                'trigger' => 'transaction'
             ],
         ];
 
