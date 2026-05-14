@@ -4,16 +4,16 @@ namespace App\Enums;
 
 enum PeriodType: string
 {
-    case DAILY = 'daily';
-    case WEEKLY = 'weekly';
-    case MONTHLY = 'monthly';
+    case DAILY = 'daily'; // Periode harian
+    case WEEKLY = 'weekly'; // Periode mingguan
+    case MONTHLY = 'monthly'; // Periode bulanan
     
     public function label(): string
     {
         return match($this) {
-            self::DAILY => 'Harian',
-            self::WEEKLY => 'Mingguan',
-            self::MONTHLY => 'Bulanan',
+            self::DAILY => 'Harian', // Label untuk daily
+            self::WEEKLY => 'Mingguan', // Label untuk weekly
+            self::MONTHLY => 'Bulanan', // Label untuk monthly
         };
     }
 }
