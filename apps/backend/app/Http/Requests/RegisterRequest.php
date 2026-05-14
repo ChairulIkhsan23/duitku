@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class RegisterRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Izinkan semua user untuk melakukan registrasi
      */
     public function authorize(): bool
     {
@@ -15,34 +15,17 @@ class RegisterRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * Aturan validasi untuk registrasi user baru
      */
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'currency' => ['nullable', 'string', 'max:3'],
-            'initial_balance' => ['nullable', 'numeric', 'min:0'],
-        ];
-    }
-
-    /**
-     * Get custom messages for validator errors.
-     */
-    public function messages(): array
-    {
-        return [
-            'name.required' => 'Nama harus diisi',
-            'email.required' => 'Email harus diisi',
-            'email.email' => 'Format email tidak valid',
-            'email.unique' => 'Email sudah terdaftar',
-            'password.required' => 'Password harus diisi',
-            'password.min' => 'Password minimal 8 karakter',
-            'password.confirmed' => 'Konfirmasi password tidak sesuai',
+            'name' => 'required|string|max:255', // Nama user
+            'email' => 'required|email|unique:users,email', // Email harus unik
+            'password' => 'required|string|min:6|confirmed', // Password + konfirmasi
+            'currency_code' => 'nullable|string|size:3', // Kode mata uang (IDR, USD, dll)
+            'initial_balance' => 'nullable|numeric|min:0', // Saldo awal
+            'onboarding_template' => 'nullable|string|in:standard,freelancer,mahasiswa', // Template onboarding
         ];
     }
 }
