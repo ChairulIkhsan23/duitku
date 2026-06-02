@@ -68,7 +68,7 @@ Kirim data dalam format JSON di request body.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "User registered successfully",
   "data": {
     "user": {
@@ -104,7 +104,7 @@ Kirim data dalam format JSON di request body.
 
 ```json
 {
-  "success": false,
+  "status": "error",
   "message": "Validation failed",
   "errors": {
     "email": ["Email sudah digunakan"],
@@ -154,7 +154,7 @@ Kirim data dalam format JSON di request body.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Login successful",
   "data": {
     "user": {
@@ -191,7 +191,7 @@ Kirim data dalam format JSON di request body.
 
 ```json
 {
-  "success": false,
+  "status": "error",
   "message": "Invalid credentials"
 }
 ```
@@ -226,7 +226,7 @@ Kirim request tanpa body, tapi harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Logged out successfully"
 }
 ```
@@ -263,7 +263,7 @@ Tidak ada body parameter. Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": {
     "id": "550e8400-e29b-41d4-a716-446655440000",
     "name": "John Doe",
@@ -327,7 +327,7 @@ Tidak ada query parameter khusus.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": {
     "balance": {
       "current": 4800000,
@@ -414,7 +414,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": [
     {
       "id": "660e8400-e29b-41d4-a716-446655440001",
@@ -514,7 +514,7 @@ Request harus include token authentication di header dan data dalam body.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Transaction created successfully",
   "data": {
     "id": "660e8400-e29b-41d4-a716-446655440001",
@@ -551,7 +551,7 @@ Request harus include token authentication di header dan data dalam body.
 
 ```json
 {
-  "success": false,
+  "status": "error",
   "message": "Validation failed",
   "errors": {
     "amount": ["Nominal minimal Rp 1"],
@@ -597,7 +597,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": {
     "id": "660e8400-e29b-41d4-a716-446655440001",
     "amount": 200000,
@@ -683,7 +683,7 @@ Request harus include token authentication di header dan data dalam body.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Transaction updated successfully",
   "data": {
     "id": "660e8400-e29b-41d4-a716-446655440001",
@@ -750,7 +750,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Transaction deleted successfully"
 }
 ```
@@ -795,7 +795,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": {
     "period": "monthly",
     "summary": [
@@ -873,7 +873,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": [
     {
       "id": "990e8400-e29b-41d4-a716-446655440000",
@@ -953,7 +953,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": {
     "overall": {
       "total_budget": 10000000,
@@ -1038,7 +1038,7 @@ Request harus include token authentication di header dan data dalam body.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Budget created successfully",
   "data": {
     "id": "990e8400-e29b-41d4-a716-446655440000",
@@ -1073,7 +1073,7 @@ Request harus include token authentication di header dan data dalam body.
 
 ```json
 {
-  "success": false,
+  "status": "error",
   "message": "Validation failed",
   "errors": {
     "category_id": ["Kategori tidak ditemukan"],
@@ -1116,7 +1116,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": {
     "id": "990e8400-e29b-41d4-a716-446655440000",
     "category": {
@@ -1194,7 +1194,7 @@ Request harus include token authentication di header dan data dalam body.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Budget updated successfully",
   "data": {
     "id": "990e8400-e29b-41d4-a716-446655440000",
@@ -1257,7 +1257,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Budget deleted successfully"
 }
 ```
@@ -1306,7 +1306,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": [
     {
       "id": "770e8400-e29b-41d4-a716-446655440000",
@@ -1370,7 +1370,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": {
     "id": "770e8400-e29b-41d4-a716-446655440000",
     "name": "Belanja",
@@ -1438,7 +1438,7 @@ Request harus include token authentication di header dan data dalam body.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Category created successfully",
   "data": {
     "id": "bb0e8400-e29b-41d4-a716-446655440002",
@@ -1463,7 +1463,7 @@ Request harus include token authentication di header dan data dalam body.
 
 ```json
 {
-  "success": false,
+  "status": "error",
   "message": "Validation failed",
   "errors": {
     "name": ["Nama kategori wajib diisi"],
@@ -1526,7 +1526,7 @@ Request harus include token authentication di header dan data dalam body.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Category updated successfully",
   "data": {
     "id": "bb0e8400-e29b-41d4-a716-446655440002",
@@ -1580,7 +1580,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Category deleted successfully"
 }
 ```
@@ -1624,7 +1624,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": {
     "id": "550e8400-e29b-41d4-a716-446655440000",
     "name": "John Doe",
@@ -1701,7 +1701,7 @@ Request harus include token authentication di header dan data dalam body.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Profile updated successfully",
   "data": {
     "id": "550e8400-e29b-41d4-a716-446655440000",
@@ -1735,7 +1735,7 @@ Request harus include token authentication di header dan data dalam body.
 
 ```json
 {
-  "success": false,
+  "status": "error",
   "message": "Validation failed",
   "errors": {
     "email": ["Email sudah digunakan user lain"],
@@ -1793,7 +1793,7 @@ Request harus include token authentication di header dan data dalam body.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Settings updated successfully",
   "data": {
     "theme": "dark",
@@ -1813,7 +1813,7 @@ Request harus include token authentication di header dan data dalam body.
 
 ```json
 {
-  "success": false,
+  "status": "error",
   "message": "Validation failed",
   "errors": {
     "theme": ["Theme harus light atau dark"]
@@ -1864,7 +1864,7 @@ Request harus include token authentication di header dan data dalam body.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Notification token updated successfully"
 }
 ```
@@ -1907,7 +1907,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": {
     "period": "weekly",
     "period_start": "2024-05-13",
@@ -1975,7 +1975,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": {
     "period": "monthly",
     "period_start": "2024-05-01",
@@ -2060,7 +2060,7 @@ Request harus include token authentication di header dan parameter.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": {
     "period": "custom",
     "period_start": "2024-04-01",
@@ -2153,7 +2153,7 @@ Content-Disposition: attachment; filename="laporan_keuangan_2024-04-01_to_2024-0
 
 ```json
 {
-  "success": false,
+  "status": "error",
   "message": "Validation failed",
   "errors": {
     "format": ["Format harus pdf, excel, atau csv"],
@@ -2199,7 +2199,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": [
     {
       "id": "cc0e8400-e29b-41d4-a716-446655440000",
@@ -2258,7 +2258,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": [
     {
       "id": "cc0e8400-e29b-41d4-a716-446655440000",
@@ -2327,7 +2327,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": [
     {
       "id": "ff0e8400-e29b-41d4-a716-446655440000",
@@ -2388,7 +2388,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": {
     "id": "ff0e8400-e29b-41d4-a716-446655440000",
     "period_type": "weekly",
@@ -2452,7 +2452,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Insight marked as read"
 }
 ```
@@ -2502,7 +2502,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Insight generation (weekly) has been queued.",
   "period_type": "weekly"
 }
@@ -2553,7 +2553,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": [
     {
       "id": 1,
@@ -2621,7 +2621,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": [
     {
       "id": 1,
@@ -2672,7 +2672,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "data": {
     "count": 5
   }
@@ -2715,7 +2715,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "Notification marked as read"
 }
 ```
@@ -2752,7 +2752,7 @@ Request harus include token authentication di header.
 
 ```json
 {
-  "success": true,
+  "status": "success",
   "message": "All notifications marked as read"
 }
 ```
@@ -2778,7 +2778,7 @@ Semua error response mengikuti format yang sama:
 
 ```json
 {
-  "success": false,
+  "status": "error",
   "message": "Error message",
   "errors": {
     "field_name": ["Error detail 1", "Error detail 2"]
