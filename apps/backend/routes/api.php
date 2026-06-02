@@ -3,6 +3,18 @@
 use Illuminate\Support\Facades\Route;
 
 /**
+ * Health check endpoint untuk monitoring dan load balancer
+ * Bisa diakses tanpa auth untuk memastikan API bisa merespon
+ */
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'ok',
+        'message' => 'API is running',
+        'timestamp' => now(),
+    ]);
+});
+
+/**
  * =========================
  * PUBLIC ROUTES (tanpa auth)
  * =========================

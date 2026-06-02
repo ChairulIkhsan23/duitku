@@ -14,6 +14,17 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         /**
+         * Admin user untuk testing akses penuh
+         */
+        User::create([
+            'id' => Str::uuid(),
+            'name' => 'Administrator',
+            'email' => 'admin@duitku.com',
+            'password' => bcrypt('password123'),
+            'is_admin' => true,  
+        ]);
+
+        /**
          * User demo: Budget Santai
          */
         User::create([
