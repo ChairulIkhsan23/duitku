@@ -1,0 +1,4134 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Personal Finance Management API",
+    "version": "1.0.0",
+    "description": "Dokumentasi API lengkap untuk Personal Finance Management (Duitku) yang terintegrasi dengan Laravel Sanctum."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000/api",
+      "description": "Local Development Server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Dashboard",
+      "description": "Endpoints untuk Dashboard Utama"
+    },
+    {
+      "name": "Transactions",
+      "description": "Endpoints untuk mengelola Transaksi"
+    },
+    {
+      "name": "Budgets",
+      "description": "Endpoints untuk mengelola Budget Keuangan"
+    },
+    {
+      "name": "Categories",
+      "description": "Endpoints untuk mengelola Kategori"
+    },
+    {
+      "name": "Profile",
+      "description": "Endpoints untuk mengelola Profil, Autentikasi, dan Settings"
+    },
+    {
+      "name": "Reports",
+      "description": "Endpoints untuk mengelola Laporan Keuangan"
+    },
+    {
+      "name": "Badges",
+      "description": "Endpoints untuk mengelola Gamifikasi dan Badges"
+    },
+    {
+      "name": "Insights",
+      "description": "Endpoints untuk rekomendasi dan Analisis Keuangan"
+    },
+    {
+      "name": "Notifications",
+      "description": "Endpoints untuk mengelola Notifikasi Pengguna"
+    }
+  ],
+  "security": [
+    {
+      "SanctumAuth": []
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Health Check API",
+        "description": "Mengecek status apakah service backend sedang berjalan.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "API is running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "API is running"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "example": "ok"
+                        },
+                        "message": {
+                          "type": "string",
+                          "example": "API is running"
+                        },
+                        "timestamp": {
+                          "type": "string",
+                          "format": "date-time",
+                          "example": "2026-06-03 00:01:39"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Register Pengguna Baru",
+        "description": "Mendaftarkan pengguna baru dan mengembalikan token autentikasi.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "John Doe"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "john@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "example": "password123"
+                  },
+                  "password_confirmation": {
+                    "type": "string",
+                    "example": "password123"
+                  },
+                  "currency_code": {
+                    "type": "string",
+                    "maxLength": 3,
+                    "default": "IDR",
+                    "example": "IDR"
+                  },
+                  "initial_balance": {
+                    "type": "number",
+                    "minimum": 0,
+                    "default": 0,
+                    "example": 5000000
+                  },
+                  "onboarding_template": {
+                    "type": "string",
+                    "enum": [
+                      "standard",
+                      "freelancer",
+                      "mahasiswa"
+                    ],
+                    "example": "standard"
+                  }
+                },
+                "required": [
+                  "name",
+                  "email",
+                  "password",
+                  "password_confirmation"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User registered successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user": {
+                          "$ref": "#/components/schemas/User"
+                        },
+                        "token": {
+                          "type": "string",
+                          "example": "1|eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Login User",
+        "description": "Autentikasi menggunakan email dan password untuk mendapatkan token Bearer.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "john@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "password123"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Login successful"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user": {
+                          "$ref": "#/components/schemas/User"
+                        },
+                        "token": {
+                          "type": "string",
+                          "example": "1|eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "description": "Unauthorized - credentials tidak cocok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid credentials"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Logout User",
+        "description": "Menghapus token autentikasi yang sedang digunakan.",
+        "responses": {
+          "200": {
+            "description": "Logged out successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Logged out successfully"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Get Profile User (Sanctum)",
+        "description": "Mengambil detail profile dasar dari token yang aktif.",
+        "responses": {
+          "200": {
+            "description": "User profile retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Get Dashboard Data",
+        "description": "Mengambil ringkasan saldo, transaksi terakhir, status budget, dan tagihan mendatang.",
+        "responses": {
+          "200": {
+            "description": "Dashboard data retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "balance": {
+                          "type": "object",
+                          "properties": {
+                            "current": {
+                              "type": "number",
+                              "example": 4800000
+                            },
+                            "total_income": {
+                              "type": "number",
+                              "example": 10000000
+                            },
+                            "total_expense": {
+                              "type": "number",
+                              "example": 5200000
+                            }
+                          }
+                        },
+                        "recent_transactions": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Transaction"
+                          }
+                        },
+                        "budget_status": {
+                          "type": "object",
+                          "properties": {
+                            "total_budgets": {
+                              "type": "integer",
+                              "example": 5
+                            },
+                            "budgets_on_track": {
+                              "type": "integer",
+                              "example": 3
+                            },
+                            "budgets_warning": {
+                              "type": "integer",
+                              "example": 2
+                            },
+                            "budgets_exceeded": {
+                              "type": "integer",
+                              "example": 0
+                            }
+                          }
+                        },
+                        "upcoming_bills": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "880e8400-e29b-41d4-a716-446655440000"
+                              },
+                              "title": {
+                                "type": "string",
+                                "example": "Cicilan Motor"
+                              },
+                              "amount": {
+                                "type": "number",
+                                "example": 3000000
+                              },
+                              "due_date": {
+                                "type": "string",
+                                "format": "date",
+                                "example": "2024-05-25"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/transactions": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "List Semua Transaksi",
+        "description": "Mengambil semua transaksi dengan opsi paginasi dan filter.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Halaman yang diminta",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Jumlah item per halaman",
+            "schema": {
+              "type": "integer",
+              "default": 15
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter tipe transaksi (income/expense)",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "income",
+                "expense"
+              ]
+            }
+          },
+          {
+            "name": "category_id",
+            "in": "query",
+            "description": "Filter ID Kategori",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "description": "Filter tanggal mulai (Y-m-d)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "description": "Filter tanggal akhir (Y-m-d)",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List transaksi berhasil didapatkan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Data retrieved successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Transaction"
+                          }
+                        },
+                        "first_page_url": {
+                          "type": "string",
+                          "example": "http://localhost:8000/api/resource?page=1"
+                        },
+                        "from": {
+                          "type": "integer",
+                          "nullable": true,
+                          "example": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "example": 5
+                        },
+                        "last_page_url": {
+                          "type": "string",
+                          "example": "http://localhost:8000/api/resource?page=5"
+                        },
+                        "next_page_url": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "http://localhost:8000/api/resource?page=2"
+                        },
+                        "path": {
+                          "type": "string",
+                          "example": "http://localhost:8000/api/resource"
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "example": 15
+                        },
+                        "prev_page_url": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": null
+                        },
+                        "to": {
+                          "type": "integer",
+                          "nullable": true,
+                          "example": 15
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 73
+                        }
+                      },
+                      "required": [
+                        "current_page",
+                        "data",
+                        "first_page_url",
+                        "last_page",
+                        "last_page_url",
+                        "path",
+                        "per_page",
+                        "total"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Create Transaksi Baru",
+        "description": "Membuat data transaksi baru untuk pengguna yang login.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "minimum": 1,
+                    "example": 200000
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "income",
+                      "expense"
+                    ],
+                    "example": "expense"
+                  },
+                  "category_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "770e8400-e29b-41d4-a716-446655440000"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2024-05-14"
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "Beli kebutuhan sekolah di Indomaret"
+                  },
+                  "photo_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://example.com/receipts/123.jpg"
+                  },
+                  "location_name": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "Indomaret Jl. Sudirman"
+                  }
+                },
+                "required": [
+                  "amount",
+                  "type",
+                  "category_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Transaction created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Transaction created successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Transaction"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/transactions/{id}": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Detail Transaksi",
+        "description": "Mengambil detail spesifik satu transaksi berdasarkan UUID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID Transaksi (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail transaksi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Transaction"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Update Transaksi",
+        "description": "Memperbarui data transaksi spesifik milik user.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID Transaksi (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "minimum": 1,
+                    "example": 250000
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "income",
+                      "expense"
+                    ],
+                    "example": "expense"
+                  },
+                  "category_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "770e8400-e29b-41d4-a716-446655440000"
+                  },
+                  "date": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2024-05-14"
+                  },
+                  "note": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "Update: Beli kebutuhan sekolah dan buku"
+                  },
+                  "photo_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "example": "https://example.com/receipts/123.jpg"
+                  },
+                  "location_name": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "Indomaret Jl. Sudirman"
+                  }
+                },
+                "required": [
+                  "amount",
+                  "type",
+                  "category_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Transaction updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Transaction updated successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Transaction"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Delete Transaksi",
+        "description": "Menghapus transaksi tertentu secara permanen dan mereview saldo user.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID Transaksi (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Transaction deleted successfully"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/transactions/summary/by-category": {
+      "get": {
+        "tags": [
+          "Transactions"
+        ],
+        "summary": "Summary Transaksi per Kategori",
+        "description": "Mengambil agregat total pemasukan/pengeluaran per kategori berdasarkan periode waktu tertentu.",
+        "parameters": [
+          {
+            "name": "period",
+            "in": "query",
+            "description": "Periode ringkasan (daily, weekly, monthly, yearly)",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "daily",
+                "weekly",
+                "monthly",
+                "yearly"
+              ],
+              "default": "monthly"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Summary per kategori",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "period": {
+                          "type": "string",
+                          "example": "monthly"
+                        },
+                        "summary": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category_id": {
+                                "type": "string",
+                                "format": "uuid",
+                                "example": "770e8400-e29b-41d4-a716-446655440000"
+                              },
+                              "category_name": {
+                                "type": "string",
+                                "example": "Belanja"
+                              },
+                              "category_icon": {
+                                "type": "string",
+                                "example": "shopping_bag"
+                              },
+                              "category_color": {
+                                "type": "string",
+                                "example": "#FF6B6B"
+                              },
+                              "type": {
+                                "type": "string",
+                                "example": "expense"
+                              },
+                              "total": {
+                                "type": "number",
+                                "example": 2500000
+                              },
+                              "formatted_total": {
+                                "type": "string",
+                                "example": "Rp 2.500.000"
+                              },
+                              "percentage": {
+                                "type": "number",
+                                "example": 54.35
+                              },
+                              "transaction_count": {
+                                "type": "integer",
+                                "example": 12
+                              }
+                            }
+                          }
+                        },
+                        "total_income": {
+                          "type": "number",
+                          "example": 10000000
+                        },
+                        "total_expense": {
+                          "type": "number",
+                          "example": 4600000
+                        },
+                        "net": {
+                          "type": "number",
+                          "example": 5400000
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/budgets": {
+      "get": {
+        "tags": [
+          "Budgets"
+        ],
+        "summary": "List Budgets",
+        "description": "Mengambil daftar budget bulanan yang terdaftar untuk user.",
+        "parameters": [
+          {
+            "name": "month_year",
+            "in": "query",
+            "description": "Filter berdasarkan bulan (YYYY-MM)",
+            "schema": {
+              "type": "string",
+              "example": "2024-05"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daftar budget",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Budget"
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Budgets"
+        ],
+        "summary": "Create Budget Baru",
+        "description": "Membuat limit budget baru untuk suatu kategori keuangan pada bulan tertentu.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "category_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "770e8400-e29b-41d4-a716-446655440000"
+                  },
+                  "month_year": {
+                    "type": "string",
+                    "example": "2024-05"
+                  },
+                  "limit_amount": {
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 3000000
+                  }
+                },
+                "required": [
+                  "category_id",
+                  "month_year",
+                  "limit_amount"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Budget created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Budget created successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Budget"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/budgets/{id}": {
+      "get": {
+        "tags": [
+          "Budgets"
+        ],
+        "summary": "Detail Budget",
+        "description": "Mengambil detail satu budget tertentu beserta progress limit-nya.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID Budget (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail budget",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Budget"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Budgets"
+        ],
+        "summary": "Update Budget",
+        "description": "Mengubah kategori, target bulan, atau jumlah limit budget tertentu.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID Budget (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "category_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "example": "770e8400-e29b-41d4-a716-446655440000"
+                  },
+                  "month_year": {
+                    "type": "string",
+                    "example": "2024-05"
+                  },
+                  "limit_amount": {
+                    "type": "number",
+                    "minimum": 0,
+                    "example": 3500000
+                  }
+                },
+                "required": [
+                  "category_id",
+                  "month_year",
+                  "limit_amount"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Budget updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Budget updated successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Budget"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Budgets"
+        ],
+        "summary": "Delete Budget",
+        "description": "Menghapus budget tertentu.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID Budget (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Budget deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Budget deleted successfully"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/budgets/current": {
+      "get": {
+        "tags": [
+          "Budgets"
+        ],
+        "summary": "Current Month Budgets",
+        "description": "Mengambil status budget aktif bulan ini beserta ringkasan penggunaannya secara umum (overall status).",
+        "responses": {
+          "200": {
+            "description": "Status budget aktif bulan ini",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "overall": {
+                          "type": "object",
+                          "properties": {
+                            "total_budget": {
+                              "type": "number",
+                              "example": 10000000
+                            },
+                            "total_spent": {
+                              "type": "number",
+                              "example": 7800000
+                            },
+                            "total_remaining": {
+                              "type": "number",
+                              "example": 2200000
+                            },
+                            "percentage": {
+                              "type": "number",
+                              "example": 78
+                            },
+                            "status": {
+                              "type": "string",
+                              "example": "warning"
+                            },
+                            "is_overspent": {
+                              "type": "boolean",
+                              "example": false
+                            }
+                          }
+                        },
+                        "budgets": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Budget"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/categories": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "List Kategori",
+        "description": "Mengambil daftar semua kategori yang tersedia (kategori default + custom user).",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter tipe kategori (income/expense)",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "income",
+                "expense"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daftar kategori",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Category"
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Create Kategori Baru (Custom)",
+        "description": "Membuat kategori baru yang sifatnya custom untuk user tertentu.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "Freelance"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "income",
+                      "expense"
+                    ],
+                    "example": "income"
+                  },
+                  "icon": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "work"
+                  },
+                  "color": {
+                    "type": "string",
+                    "maxLength": 7,
+                    "example": "#00D084"
+                  },
+                  "budget_default": {
+                    "type": "number",
+                    "minimum": 0,
+                    "example": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Category created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Category created successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/categories/{id}": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Detail Kategori",
+        "description": "Mengambil detail data satu kategori.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID Kategori (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail kategori",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Update Kategori (Custom)",
+        "description": "Memperbarui data kategori custom milik user. Kategori default tidak bisa diperbarui.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID Kategori (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "example": "Freelance Indonesia"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "income",
+                      "expense"
+                    ],
+                    "example": "income"
+                  },
+                  "icon": {
+                    "type": "string",
+                    "example": "work"
+                  },
+                  "color": {
+                    "type": "string",
+                    "maxLength": 7,
+                    "example": "#00D084"
+                  },
+                  "budget_default": {
+                    "type": "number",
+                    "minimum": 0,
+                    "example": null
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Category updated successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Category"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Kategori default tidak bisa dimodifikasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Cannot modify system categories"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Delete Kategori (Custom)",
+        "description": "Menghapus kategori custom milik user. Kategori bawaan sistem tidak bisa dihapus.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID Kategori (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Category deleted successfully"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden - Kategori default tidak bisa dihapus",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "error"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Cannot delete system categories"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/profile": {
+      "get": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Show Profile User",
+        "description": "Mengambil detail profil lengkap pengguna yang sedang aktif (sama dengan /user).",
+        "responses": {
+          "200": {
+            "description": "User profile retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Update Profile User",
+        "description": "Mengubah info personal user (name, email, password, currency, avatar).",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "John Doe Updated"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "john@example.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "minLength": 6,
+                    "example": "newpassword123"
+                  },
+                  "password_confirmation": {
+                    "type": "string",
+                    "example": "newpassword123"
+                  },
+                  "currency_code": {
+                    "type": "string",
+                    "maxLength": 3,
+                    "example": "USD"
+                  },
+                  "avatar": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "https://example.com/avatars/user-new.jpg"
+                  },
+                  "notification_token": {
+                    "type": "string",
+                    "example": null
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Profile updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Profile updated successfully"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/profile/settings": {
+      "put": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Update Settings User",
+        "description": "Memperbarui konfigurasi preferensi UI, bahasa, dan notifikasi user.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "theme": {
+                    "type": "string",
+                    "enum": [
+                      "light",
+                      "dark"
+                    ],
+                    "example": "dark"
+                  },
+                  "language": {
+                    "type": "string",
+                    "maxLength": 5,
+                    "example": "id"
+                  },
+                  "notifications_enabled": {
+                    "type": "boolean",
+                    "example": true
+                  },
+                  "daily_reminder": {
+                    "type": "boolean",
+                    "example": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Settings updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Settings updated successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "theme": {
+                          "type": "string",
+                          "example": "dark"
+                        },
+                        "language": {
+                          "type": "string",
+                          "example": "id"
+                        },
+                        "notifications_enabled": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "daily_reminder": {
+                          "type": "boolean",
+                          "example": true
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/profile/notification-token": {
+      "post": {
+        "tags": [
+          "Profile"
+        ],
+        "summary": "Update FCM/Notification Token",
+        "description": "Memperbarui token push notification Firebase (FCM) pada device pengguna.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "notification_token": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "c-eFVF8N2XG_xJJPbJCk_Q:APA91bGkdpXsKdXrX_6eXXXXXXXXXXXXXXXXXXXXXX"
+                  }
+                },
+                "required": [
+                  "notification_token"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Notification token updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Notification token updated successfully"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/reports/weekly": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Laporan Keuangan Mingguan",
+        "description": "Mengambil statistik mingguan untuk total income, expense, and category breakdown.",
+        "responses": {
+          "200": {
+            "description": "Laporan mingguan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "period": {
+                          "type": "string",
+                          "example": "weekly"
+                        },
+                        "period_start": {
+                          "type": "string",
+                          "format": "date",
+                          "example": "2024-05-13"
+                        },
+                        "period_end": {
+                          "type": "string",
+                          "format": "date",
+                          "example": "2024-05-19"
+                        },
+                        "summary": {
+                          "type": "object",
+                          "properties": {
+                            "total_income": {
+                              "type": "number",
+                              "example": 2000000
+                            },
+                            "total_expense": {
+                              "type": "number",
+                              "example": 1500000
+                            },
+                            "net": {
+                              "type": "number",
+                              "example": 500000
+                            }
+                          }
+                        },
+                        "by_category": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "example": "Belanja"
+                              },
+                              "type": {
+                                "type": "string",
+                                "example": "expense"
+                              },
+                              "total": {
+                                "type": "number",
+                                "example": 800000
+                              },
+                              "percentage": {
+                                "type": "number",
+                                "example": 53.33
+                              }
+                            }
+                          }
+                        },
+                        "by_day": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "number"
+                          },
+                          "example": {
+                            "2024-05-13": 100000,
+                            "2024-05-14": 300000,
+                            "2024-05-15": 250000
+                          }
+                        },
+                        "transactions_count": {
+                          "type": "integer",
+                          "example": 12
+                        },
+                        "average_daily_spending": {
+                          "type": "number",
+                          "example": 214285.71
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/reports/monthly": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Laporan Keuangan Bulanan",
+        "description": "Mengambil statistik bulanan (bulan ini).",
+        "responses": {
+          "200": {
+            "description": "Laporan bulanan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "period": {
+                          "type": "string",
+                          "example": "monthly"
+                        },
+                        "period_start": {
+                          "type": "string",
+                          "format": "date",
+                          "example": "2024-05-01"
+                        },
+                        "period_end": {
+                          "type": "string",
+                          "format": "date",
+                          "example": "2024-05-31"
+                        },
+                        "summary": {
+                          "type": "object",
+                          "properties": {
+                            "total_income": {
+                              "type": "number",
+                              "example": 8000000
+                            },
+                            "total_expense": {
+                              "type": "number",
+                              "example": 6500000
+                            },
+                            "net": {
+                              "type": "number",
+                              "example": 1500000
+                            }
+                          }
+                        },
+                        "by_category": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "example": "Belanja"
+                              },
+                              "type": {
+                                "type": "string",
+                                "example": "expense"
+                              },
+                              "total": {
+                                "type": "number",
+                                "example": 3000000
+                              },
+                              "percentage": {
+                                "type": "number",
+                                "example": 46.15
+                              }
+                            }
+                          }
+                        },
+                        "by_week": {
+                          "type": "object",
+                          "properties": {
+                            "week_1": {
+                              "type": "number",
+                              "example": 1200000
+                            },
+                            "week_2": {
+                              "type": "number",
+                              "example": 1800000
+                            },
+                            "week_3": {
+                              "type": "number",
+                              "example": 1500000
+                            },
+                            "week_4": {
+                              "type": "number",
+                              "example": 1500000
+                            }
+                          }
+                        },
+                        "transactions_count": {
+                          "type": "integer",
+                          "example": 45
+                        },
+                        "average_daily_spending": {
+                          "type": "number",
+                          "example": 209677.42
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/reports/custom": {
+      "get": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Laporan Custom Range Tanggal",
+        "description": "Mengambil laporan keuangan dengan filter range tanggal custom.",
+        "parameters": [
+          {
+            "name": "start_date",
+            "in": "query",
+            "required": true,
+            "description": "Tanggal mulai (Y-m-d)",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2024-04-01"
+            }
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "required": true,
+            "description": "Tanggal akhir (Y-m-d)",
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2024-05-14"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Format output",
+            "schema": {
+              "type": "string",
+              "default": "json"
+            }
+          },
+          {
+            "name": "include_charts",
+            "in": "query",
+            "description": "Include chart data",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "categories",
+            "in": "query",
+            "description": "Filter kategori (array/multiple)",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter tipe data",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "income",
+                "expense",
+                "both"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Laporan custom",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "period": {
+                          "type": "string",
+                          "example": "custom"
+                        },
+                        "period_start": {
+                          "type": "string",
+                          "format": "date",
+                          "example": "2024-04-01"
+                        },
+                        "period_end": {
+                          "type": "string",
+                          "format": "date",
+                          "example": "2024-05-14"
+                        },
+                        "summary": {
+                          "type": "object",
+                          "properties": {
+                            "total_income": {
+                              "type": "number",
+                              "example": 15000000
+                            },
+                            "total_expense": {
+                              "type": "number",
+                              "example": 12500000
+                            },
+                            "net": {
+                              "type": "number",
+                              "example": 2500000
+                            }
+                          }
+                        },
+                        "by_category": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "example": "Belanja"
+                              },
+                              "type": {
+                                "type": "string",
+                                "example": "expense"
+                              },
+                              "total": {
+                                "type": "number",
+                                "example": 6000000
+                              },
+                              "percentage": {
+                                "type": "number",
+                                "example": 48
+                              }
+                            }
+                          }
+                        },
+                        "transactions_count": {
+                          "type": "integer",
+                          "example": 89
+                        },
+                        "average_daily_spending": {
+                          "type": "number",
+                          "example": 280898.88
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/reports/export": {
+      "post": {
+        "tags": [
+          "Reports"
+        ],
+        "summary": "Export Laporan Keuangan ke PDF/Excel/CSV",
+        "description": "Mengekspor laporan keuangan dalam rentang tanggal tertentu ke file fisik.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "format": {
+                    "type": "string",
+                    "enum": [
+                      "pdf",
+                      "excel",
+                      "csv"
+                    ],
+                    "example": "pdf"
+                  },
+                  "start_date": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2024-04-01"
+                  },
+                  "end_date": {
+                    "type": "string",
+                    "format": "date",
+                    "example": "2024-05-14"
+                  }
+                },
+                "required": [
+                  "format",
+                  "start_date",
+                  "end_date"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "File binary hasil export (PDF/Excel/CSV)",
+            "headers": {
+              "Content-Disposition": {
+                "schema": {
+                  "type": "string",
+                  "example": "attachment; filename=\"laporan_keuangan_2024-04-01_to_2024-05-14.pdf\""
+                },
+                "description": "Informasi download file attachment"
+              }
+            },
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/badges": {
+      "get": {
+        "tags": [
+          "Badges"
+        ],
+        "summary": "Badges yang Sudah Didapat User",
+        "description": "Mengambil semua lencana gamifikasi yang berhasil dicapai oleh pengguna.",
+        "responses": {
+          "200": {
+            "description": "Daftar badges didapat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Badge"
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/badges/all": {
+      "get": {
+        "tags": [
+          "Badges"
+        ],
+        "summary": "Semua Badges Tersedia di Sistem",
+        "description": "Mengambil semua daftar badges di sistem disertai indikator status kepemilikan user (is_earned).",
+        "responses": {
+          "200": {
+            "description": "Semua badges dan status kepemilikan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Badge"
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/insights": {
+      "get": {
+        "tags": [
+          "Insights"
+        ],
+        "summary": "List Insights Keuangan User",
+        "description": "Mengambil riwayat analisis finansial personal dan rekomendasi finansial.",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Filter tipe periode insight",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List insights",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Insight"
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/insights/latest": {
+      "get": {
+        "tags": [
+          "Insights"
+        ],
+        "summary": "Insight Terbaru yang Belum Dibaca",
+        "description": "Mengambil insight finansial paling baru yang statusnya belum dibaca oleh user.",
+        "responses": {
+          "200": {
+            "description": "Insight terbaru",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "anyOf": [
+                        {
+                          "$ref": "#/components/schemas/Insight"
+                        },
+                        {
+                          "type": "object",
+                          "nullable": true
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/insights/{id}/read": {
+      "post": {
+        "tags": [
+          "Insights"
+        ],
+        "summary": "Tandai Insight Sebagai Sudah Dibaca",
+        "description": "Mengubah status is_read dari insight tertentu menjadi true.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID Insight (UUID)",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Insight marked as read",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Insight marked as read"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/insights/generate": {
+      "post": {
+        "tags": [
+          "Insights"
+        ],
+        "summary": "Manual Generate Insight",
+        "description": "Memicu proses pembuatan (generation) insight keuangan secara manual menggunakan background worker (asynchronous).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "period_type": {
+                    "type": "string",
+                    "enum": [
+                      "weekly",
+                      "monthly"
+                    ],
+                    "default": "weekly",
+                    "example": "weekly"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Generation has been queued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Insight generation (weekly) has been queued."
+                    },
+                    "period_type": {
+                      "type": "string",
+                      "example": "weekly"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "period_type"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/notifications": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "List Notifikasi dengan Paginasi",
+        "description": "Mengambil semua notifikasi user dengan pagination.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Halaman yang diminta",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Jumlah notifikasi per halaman",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Daftar notifikasi didapatkan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Data retrieved successfully"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "current_page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Notification"
+                          }
+                        },
+                        "first_page_url": {
+                          "type": "string",
+                          "example": "http://localhost:8000/api/resource?page=1"
+                        },
+                        "from": {
+                          "type": "integer",
+                          "nullable": true,
+                          "example": 1
+                        },
+                        "last_page": {
+                          "type": "integer",
+                          "example": 5
+                        },
+                        "last_page_url": {
+                          "type": "string",
+                          "example": "http://localhost:8000/api/resource?page=5"
+                        },
+                        "next_page_url": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "http://localhost:8000/api/resource?page=2"
+                        },
+                        "path": {
+                          "type": "string",
+                          "example": "http://localhost:8000/api/resource"
+                        },
+                        "per_page": {
+                          "type": "integer",
+                          "example": 15
+                        },
+                        "prev_page_url": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": null
+                        },
+                        "to": {
+                          "type": "integer",
+                          "nullable": true,
+                          "example": 15
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 73
+                        }
+                      },
+                      "required": [
+                        "current_page",
+                        "data",
+                        "first_page_url",
+                        "last_page",
+                        "last_page_url",
+                        "path",
+                        "per_page",
+                        "total"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/notifications/unread": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "List Notifikasi Belum Dibaca",
+        "description": "Mengambil semua notifikasi yang belum dibaca (is_read: false).",
+        "responses": {
+          "200": {
+            "description": "Daftar notifikasi belum dibaca",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Notification"
+                      }
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/notifications/unread-count": {
+      "get": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Jumlah Notifikasi Belum Dibaca",
+        "description": "Mengambil angka summary counter notifikasi yang belum dibaca.",
+        "responses": {
+          "200": {
+            "description": "Jumlah notifikasi unread",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Success"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "count": {
+                          "type": "integer",
+                          "example": 5
+                        }
+                      },
+                      "required": [
+                        "count"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/notifications/{id}/read": {
+      "post": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Tandai Satu Notifikasi Sebagai Dibaca",
+        "description": "Menandai satu notifikasi tertentu berdasarkan ID ke status sudah dibaca.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID Notifikasi (Integer/String)",
+            "schema": {
+              "type": "string",
+              "example": "1"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification marked as read",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Notification marked as read"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/notifications/read-all": {
+      "post": {
+        "tags": [
+          "Notifications"
+        ],
+        "summary": "Tandai Semua Notifikasi Sebagai Dibaca",
+        "description": "Menandai seluruh notifikasi user yang belum dibaca sekaligus ke status sudah dibaca.",
+        "responses": {
+          "200": {
+            "description": "All notifications marked as read",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "success"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "All notifications marked as read"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "SanctumAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Masukkan token Sanctum Anda dengan format: Bearer {token}"
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "name": {
+            "type": "string",
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "john@example.com"
+          },
+          "currency_code": {
+            "type": "string",
+            "example": "IDR"
+          },
+          "initial_balance": {
+            "type": "number",
+            "example": 5000000
+          },
+          "current_balance": {
+            "type": "number",
+            "example": 4800000
+          },
+          "streak_days": {
+            "type": "integer",
+            "example": 5
+          },
+          "is_premium": {
+            "type": "boolean",
+            "example": true
+          },
+          "premium_until": {
+            "type": "string",
+            "format": "date",
+            "nullable": true,
+            "example": "2024-12-31"
+          },
+          "avatar": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "example": "https://example.com/avatars/user.jpg"
+          },
+          "settings": {
+            "type": "object",
+            "properties": {
+              "theme": {
+                "type": "string",
+                "example": "dark"
+              },
+              "language": {
+                "type": "string",
+                "example": "id"
+              },
+              "notifications_enabled": {
+                "type": "boolean",
+                "example": true
+              },
+              "daily_reminder": {
+                "type": "boolean",
+                "example": true
+              }
+            }
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-05-14 10:30:00"
+          }
+        }
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "770e8400-e29b-41d4-a716-446655440000"
+          },
+          "name": {
+            "type": "string",
+            "example": "Belanja"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "income",
+              "expense"
+            ],
+            "example": "expense"
+          },
+          "icon": {
+            "type": "string",
+            "example": "shopping_bag"
+          },
+          "color": {
+            "type": "string",
+            "example": "#FF6B6B"
+          },
+          "budget_default": {
+            "type": "number",
+            "nullable": true,
+            "example": 3000000
+          },
+          "is_default": {
+            "type": "boolean",
+            "example": true
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "example": null
+          }
+        }
+      },
+      "Transaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "660e8400-e29b-41d4-a716-446655440001"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "category_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "770e8400-e29b-41d4-a716-446655440000"
+          },
+          "amount": {
+            "type": "number",
+            "example": 200000
+          },
+          "formatted_amount": {
+            "type": "string",
+            "example": "Rp 200.000"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "income",
+              "expense"
+            ],
+            "example": "expense"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-05-14"
+          },
+          "note": {
+            "type": "string",
+            "nullable": true,
+            "example": "Beli kebutuhan sekolah"
+          },
+          "photo_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "example": "https://example.com/receipts/123.jpg"
+          },
+          "location_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Indomaret"
+          },
+          "is_duplicate": {
+            "type": "boolean",
+            "example": false
+          },
+          "metadata": {
+            "type": "object",
+            "nullable": true,
+            "example": null
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-05-14 10:30:00"
+          }
+        }
+      },
+      "Budget": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "990e8400-e29b-41d4-a716-446655440000"
+          },
+          "user_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "category_id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "770e8400-e29b-41d4-a716-446655440000"
+          },
+          "month_year": {
+            "type": "string",
+            "example": "2024-05"
+          },
+          "limit_amount": {
+            "type": "number",
+            "example": 3000000
+          },
+          "spent_amount": {
+            "type": "number",
+            "example": 2500000
+          },
+          "remaining_amount": {
+            "type": "number",
+            "example": 500000
+          },
+          "percentage_used": {
+            "type": "number",
+            "example": 83.33
+          },
+          "is_overspent": {
+            "type": "boolean",
+            "example": false
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "on_track",
+              "warning",
+              "exceeded"
+            ],
+            "example": "warning"
+          },
+          "category": {
+            "$ref": "#/components/schemas/Category"
+          }
+        }
+      },
+      "Badge": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "cc0e8400-e29b-41d4-a716-446655440000"
+          },
+          "name": {
+            "type": "string",
+            "example": "First Transaction"
+          },
+          "slug": {
+            "type": "string",
+            "example": "first_transaction"
+          },
+          "description": {
+            "type": "string",
+            "example": "Membuat transaksi pertama"
+          },
+          "icon": {
+            "type": "string",
+            "example": "🎉"
+          },
+          "color": {
+            "type": "string",
+            "example": "#FFD700"
+          },
+          "points": {
+            "type": "integer",
+            "example": 10
+          },
+          "is_earned": {
+            "type": "boolean",
+            "example": true
+          },
+          "awarded_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": "2024-05-14 10:45:00"
+          },
+          "progress_data": {
+            "type": "object",
+            "nullable": true,
+            "example": null
+          }
+        }
+      },
+      "Insight": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "ff0e8400-e29b-41d4-a716-446655440000"
+          },
+          "period_type": {
+            "type": "string",
+            "enum": [
+              "daily",
+              "weekly",
+              "monthly"
+            ],
+            "example": "weekly"
+          },
+          "period_start": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-05-13"
+          },
+          "period_end": {
+            "type": "string",
+            "format": "date",
+            "example": "2024-05-19"
+          },
+          "period_label": {
+            "type": "string",
+            "example": "Minggu ini"
+          },
+          "summary": {
+            "type": "string",
+            "example": "Pengeluaran Anda minggu ini 20% lebih tinggi dari rata-rata"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "insights": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string",
+                      "example": "Belanja membengkak"
+                    },
+                    "description": {
+                      "type": "string",
+                      "example": "Kategori Belanja mengalami kenaikan 30% dibanding minggu lalu"
+                    }
+                  }
+                }
+              },
+              "recommendations": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "Kurangi pengeluaran di kategori Belanja minggu depan"
+                }
+              }
+            }
+          },
+          "is_read": {
+            "type": "boolean",
+            "example": false
+          },
+          "generated_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-05-20 08:00:00"
+          },
+          "generated_at_human": {
+            "type": "string",
+            "example": "12 jam lalu"
+          },
+          "insights_count": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "Notification": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1"
+          },
+          "type": {
+            "type": "string",
+            "example": "budget_warning"
+          },
+          "title": {
+            "type": "string",
+            "example": "Budget Warning - Belanja"
+          },
+          "body": {
+            "type": "string",
+            "example": "Budget kategori Belanja sudah mencapai 85%"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "category_id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "770e8400-e29b-41d4-a716-446655440000"
+              },
+              "percentage": {
+                "type": "number",
+                "example": 85
+              }
+            }
+          },
+          "is_read": {
+            "type": "boolean",
+            "example": false
+          },
+          "read_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "example": null
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-05-14 14:30:00"
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad Request / Validation error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Validation failed"
+                },
+                "errors": {
+                  "type": "object",
+                  "example": {
+                    "field_name": [
+                      "Detail validation error"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "status",
+                "message"
+              ]
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized (Token tidak valid / expired)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Unauthorized"
+                }
+              },
+              "required": [
+                "status",
+                "message"
+              ]
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden (Tidak punya akses ke resource ini)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Forbidden access"
+                }
+              },
+              "required": [
+                "status",
+                "message"
+              ]
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found (Resource tidak ditemukan)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Resource not found"
+                }
+              },
+              "required": [
+                "status",
+                "message"
+              ]
+            }
+          }
+        }
+      },
+      "UnprocessableEntity": {
+        "description": "Unprocessable Entity (Format data salah)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Unprocessable Entity"
+                }
+              },
+              "required": [
+                "status",
+                "message"
+              ]
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal server error occurred"
+                }
+              },
+              "required": [
+                "status",
+                "message"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
