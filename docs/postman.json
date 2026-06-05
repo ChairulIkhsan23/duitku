@@ -1,0 +1,1047 @@
+{
+  "info": {
+    "name": "Duitku API",
+    "description": "Personal Finance Management API - Complete collection of all available endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Health Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Check if API is running and responsive"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"currency_code\": \"IDR\",\n  \"initial_balance\": 1000000,\n  \"onboarding_template\": \"standard\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["register"]
+            },
+            "description": "Register a new user account"
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["login"]
+            },
+            "description": "Login and get authentication token"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/user",
+              "host": ["{{baseUrl}}"],
+              "path": ["user"]
+            },
+            "description": "Get current authenticated user profile"
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["logout"]
+            },
+            "description": "Logout current authenticated user"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Profile & Settings",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["profile"]
+            },
+            "description": "Get user profile details"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Updated\",\n  \"phone\": \"+62812345678\",\n  \"date_of_birth\": \"1990-01-15\",\n  \"occupation\": \"Software Engineer\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["profile"]
+            },
+            "description": "Update user profile information"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"theme\": \"dark\",\n  \"language\": \"id\",\n  \"notifications_enabled\": true,\n  \"daily_reminder\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/profile/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["profile", "settings"]
+            },
+            "description": "Update user application settings"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Notification Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fcm_token\": \"exJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NlY3VyZWR0YWtlbiIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHl0b29sa2l0Lmdvb2dsZWFwaXMuY29tL2dvb2dsZS5pZGVudGl0eS5pZGVudGl0eXRvb2xraXQudjEuSWRlbnRpdHlUb29sa2l0In0\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/profile/notification-token",
+              "host": ["{{baseUrl}}"],
+              "path": ["profile", "notification-token"]
+            },
+            "description": "Update FCM notification token for push notifications"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["dashboard"]
+            },
+            "description": "Get dashboard overview data with transactions summary and budget status"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "List Categories",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories?type=expense",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "expense",
+                  "description": "Filter by type: income or expense (optional)"
+                }
+              ]
+            },
+            "description": "Get all user categories with optional type filter"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Groceries\",\n  \"type\": \"expense\",\n  \"icon\": \"shopping-cart\",\n  \"color\": \"#FF6B6B\",\n  \"budget_default\": 2000000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories"]
+            },
+            "description": "Create a new expenditure or income category"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"]
+            },
+            "description": "Get specific category details"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Groceries Updated\",\n  \"icon\": \"shopping-bag\",\n  \"color\": \"#4ECDC4\",\n  \"budget_default\": 2500000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"]
+            },
+            "description": "Update category information"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categoryId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["categories", "{{categoryId}}"]
+            },
+            "description": "Delete a category"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "List Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transactions?per_page=15&page=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["transactions"],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "15",
+                  "description": "Number of items per page (optional)"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number (optional)"
+                }
+              ]
+            },
+            "description": "Get paginated list of user transactions"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Transaction",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 150000,\n  \"type\": \"expense\",\n  \"category_id\": \"{{categoryId}}\",\n  \"date\": \"2024-06-05\",\n  \"note\": \"Weekly groceries shopping\",\n  \"photo_url\": \"https://example.com/receipt.jpg\",\n  \"location_name\": \"Supermarket ABC\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["transactions"]
+            },
+            "description": "Create a new transaction (income or expense)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transaction",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transactions/{{transactionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["transactions", "{{transactionId}}"]
+            },
+            "description": "Get specific transaction details"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Transaction",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 175000,\n  \"type\": \"expense\",\n  \"category_id\": \"{{categoryId}}\",\n  \"date\": \"2024-06-05\",\n  \"note\": \"Weekly groceries shopping updated\",\n  \"photo_url\": \"https://example.com/receipt-updated.jpg\",\n  \"location_name\": \"Supermarket ABC\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/transactions/{{transactionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["transactions", "{{transactionId}}"]
+            },
+            "description": "Update transaction information"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Transaction",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transactions/{{transactionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["transactions", "{{transactionId}}"]
+            },
+            "description": "Delete a transaction"
+          },
+          "response": []
+        },
+        {
+          "name": "Transaction Summary by Category",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transactions/summary/by-category",
+              "host": ["{{baseUrl}}"],
+              "path": ["transactions", "summary", "by-category"]
+            },
+            "description": "Get transaction summary grouped by category"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Budgets",
+      "item": [
+        {
+          "name": "List Budgets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/budgets?month_year=2024-06",
+              "host": ["{{baseUrl}}"],
+              "path": ["budgets"],
+              "query": [
+                {
+                  "key": "month_year",
+                  "value": "2024-06",
+                  "description": "Filter by month in format YYYY-MM (optional)"
+                }
+              ]
+            },
+            "description": "Get paginated list of user budgets with optional month filter"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current Month Budgets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/budgets/current",
+              "host": ["{{baseUrl}}"],
+              "path": ["budgets", "current"]
+            },
+            "description": "Get budget status for current month"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Budget",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category_id\": \"{{categoryId}}\",\n  \"amount\": 5000000,\n  \"month_year\": \"2024-06\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/budgets",
+              "host": ["{{baseUrl}}"],
+              "path": ["budgets"]
+            },
+            "description": "Create a budget for specific category and month"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Budget",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/budgets/{{budgetId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["budgets", "{{budgetId}}"]
+            },
+            "description": "Get specific budget details"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Budget",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 6000000\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/budgets/{{budgetId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["budgets", "{{budgetId}}"]
+            },
+            "description": "Update budget amount"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Budget",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/budgets/{{budgetId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["budgets", "{{budgetId}}"]
+            },
+            "description": "Delete a budget"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Weekly Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/weekly",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "weekly"]
+            },
+            "description": "Get weekly financial report"
+          },
+          "response": []
+        },
+        {
+          "name": "Monthly Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/monthly",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "monthly"]
+            },
+            "description": "Get monthly financial report"
+          },
+          "response": []
+        },
+        {
+          "name": "Custom Range Report",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/reports/custom?start_date=2024-06-01&end_date=2024-06-30",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "custom"],
+              "query": [
+                {
+                  "key": "start_date",
+                  "value": "2024-06-01",
+                  "description": "Start date in format YYYY-MM-DD"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-06-30",
+                  "description": "End date in format YYYY-MM-DD"
+                }
+              ]
+            },
+            "description": "Get financial report for custom date range"
+          },
+          "response": []
+        },
+        {
+          "name": "Export Report",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"start_date\": \"2024-06-01\",\n  \"end_date\": \"2024-06-30\",\n  \"format\": \"pdf\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reports/export",
+              "host": ["{{baseUrl}}"],
+              "path": ["reports", "export"]
+            },
+            "description": "Export report to file (pdf/xlsx)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Badges",
+      "item": [
+        {
+          "name": "Get Earned Badges",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/badges",
+              "host": ["{{baseUrl}}"],
+              "path": ["badges"]
+            },
+            "description": "Get all badges earned by current user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Badges",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/badges/all",
+              "host": ["{{baseUrl}}"],
+              "path": ["badges", "all"]
+            },
+            "description": "Get all available badges with user progress status"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Insights",
+      "item": [
+        {
+          "name": "List Insights",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/insights?type=spending",
+              "host": ["{{baseUrl}}"],
+              "path": ["insights"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "spending",
+                  "description": "Filter by type (optional)"
+                }
+              ]
+            },
+            "description": "Get user insights with optional type filter"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Latest Insight",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/insights/latest",
+              "host": ["{{baseUrl}}"],
+              "path": ["insights", "latest"]
+            },
+            "description": "Get latest unread insight"
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Insights",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/insights/generate",
+              "host": ["{{baseUrl}}"],
+              "path": ["insights", "generate"]
+            },
+            "description": "Generate new insights based on user transaction data"
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Insight as Read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/insights/{{insightId}}/read",
+              "host": ["{{baseUrl}}"],
+              "path": ["insights", "{{insightId}}", "read"]
+            },
+            "description": "Mark specific insight as read"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "List Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications?per_page=20&page=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications"],
+              "query": [
+                {
+                  "key": "per_page",
+                  "value": "20",
+                  "description": "Number of items per page (optional)"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number (optional)"
+                }
+              ]
+            },
+            "description": "Get paginated list of user notifications"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Unread Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/unread",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "unread"]
+            },
+            "description": "Get all unread notifications"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/unread-count",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "unread-count"]
+            },
+            "description": "Get count of unread notifications"
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/{{notificationId}}/read",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "{{notificationId}}", "read"]
+            },
+            "description": "Mark specific notification as read"
+          },
+          "response": []
+        },
+        {
+          "name": "Mark All Notifications as Read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/read-all",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "read-all"]
+            },
+            "description": "Mark all notifications as read for current user"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "categoryId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "transactionId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "budgetId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "insightId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "notificationId",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
