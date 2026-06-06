@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Duitku API",
-    "description": "Personal Finance Management API - Complete collection of all available endpoints",
+    "description": "Personal Finance Management API - synced with Laravel backend implementation.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -15,12 +15,38 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/health",
-              "host": ["{{baseUrl}}"],
-              "path": ["health"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
             },
-            "description": "Check if API is running and responsive"
+            "description": "Check API status. This endpoint does not use the standard success/data wrapper."
           },
-          "response": []
+          "response": [
+            {
+              "name": "OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/health",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "health"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"status\": \"ok\",\n  \"message\": \"API is running\",\n  \"timestamp\": \"2026-06-06T02:00:00.000000Z\"\n}"
+            }
+          ]
         }
       ]
     },
@@ -43,12 +69,47 @@
             },
             "url": {
               "raw": "{{baseUrl}}/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "register"
+              ]
             },
-            "description": "Register a new user account"
+            "description": "Register a new user. Optional fields: currency_code, initial_balance, onboarding_template."
           },
-          "response": []
+          "response": [
+            {
+              "name": "Created",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\",\n  \"currency_code\": \"IDR\",\n  \"initial_balance\": 1000000,\n  \"onboarding_template\": \"standard\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/register",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "register"
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"message\": \"User registered successfully\",\n  \"data\": {\n    \"user\": {\n      \"id\": \"{{userId}}\",\n      \"name\": \"John Doe\",\n      \"email\": \"john.doe@example.com\",\n      \"currency_code\": \"IDR\",\n      \"initial_balance\": 1000000,\n      \"current_balance\": 1000000,\n      \"streak_days\": 0,\n      \"is_premium\": false,\n      \"premium_until\": null,\n      \"avatar\": null,\n      \"settings\": null,\n      \"created_at\": \"2026-06-06 09:00:00\"\n    },\n    \"token\": \"plain-text-token\"\n  }\n}"
+            }
+          ]
         },
         {
           "name": "Login",
@@ -66,15 +127,19 @@
             },
             "url": {
               "raw": "{{baseUrl}}/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
             },
-            "description": "Login and get authentication token"
+            "description": "Login and receive a Sanctum plain text token."
           },
           "response": []
         },
         {
-          "name": "Get User Profile",
+          "name": "Get Authenticated User",
           "request": {
             "method": "GET",
             "header": [
@@ -85,10 +150,14 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/user",
-              "host": ["{{baseUrl}}"],
-              "path": ["user"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "user"
+              ]
             },
-            "description": "Get current authenticated user profile"
+            "description": "Get current authenticated user resource."
           },
           "response": []
         },
@@ -104,10 +173,14 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/logout",
-              "host": ["{{baseUrl}}"],
-              "path": ["logout"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "logout"
+              ]
             },
-            "description": "Logout current authenticated user"
+            "description": "Delete current Sanctum token."
           },
           "response": []
         }
@@ -128,10 +201,14 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/profile",
-              "host": ["{{baseUrl}}"],
-              "path": ["profile"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile"
+              ]
             },
-            "description": "Get user profile details"
+            "description": "Get profile using UserResource."
           },
           "response": []
         },
@@ -151,14 +228,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"John Updated\",\n  \"phone\": \"+62812345678\",\n  \"date_of_birth\": \"1990-01-15\",\n  \"occupation\": \"Software Engineer\"\n}"
+              "raw": "{\n  \"name\": \"John Updated\",\n  \"email\": \"john.updated@example.com\",\n  \"currency_code\": \"USD\",\n  \"avatar\": \"https://example.com/avatar.jpg\",\n  \"settings\": {\n    \"theme\": \"dark\",\n    \"language\": \"id\"\n  }\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/profile",
-              "host": ["{{baseUrl}}"],
-              "path": ["profile"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile"
+              ]
             },
-            "description": "Update user profile information"
+            "description": "Update profile. Supported backend fields: name, email, password, password_confirmation, currency_code, avatar, settings, notification_token."
           },
           "response": []
         },
@@ -182,10 +263,15 @@
             },
             "url": {
               "raw": "{{baseUrl}}/profile/settings",
-              "host": ["{{baseUrl}}"],
-              "path": ["profile", "settings"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile",
+                "settings"
+              ]
             },
-            "description": "Update user application settings"
+            "description": "Update application settings. theme accepts light or dark."
           },
           "response": []
         },
@@ -205,14 +291,19 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fcm_token\": \"exJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL3NlY3VyZWR0YWtlbiIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHl0b29sa2l0Lmdvb2dsZWFwaXMuY29tL2dvb2dsZS5pZGVudGl0eS5pZGVudGl0eXRvb2xraXQudjEuSWRlbnRpdHlUb29sa2l0In0\"\n}"
+              "raw": "{\n  \"notification_token\": \"fcm-or-device-token\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/profile/notification-token",
-              "host": ["{{baseUrl}}"],
-              "path": ["profile", "notification-token"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "profile",
+                "notification-token"
+              ]
             },
-            "description": "Update FCM notification token for push notifications"
+            "description": "Update push notification token. Backend expects notification_token."
           },
           "response": []
         }
@@ -233,12 +324,43 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/dashboard",
-              "host": ["{{baseUrl}}"],
-              "path": ["dashboard"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "dashboard"
+              ]
             },
-            "description": "Get dashboard overview data with transactions summary and budget status"
+            "description": "Get dashboard data: summary, comparison, budget, streak, recent_transactions, and currency."
           },
-          "response": []
+          "response": [
+            {
+              "name": "OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/dashboard",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "dashboard"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"summary\": {\n      \"total_income\": 5000000,\n      \"total_expense\": 1500000,\n      \"balance\": 3500000,\n      \"savings_rate\": 70,\n      \"top_categories\": [],\n      \"transaction_count\": 12\n    },\n    \"comparison\": {\n      \"income_change\": 10.5,\n      \"expense_change\": -3.2\n    },\n    \"budget\": {\n      \"overall\": {\n        \"total_budget\": 3000000,\n        \"total_spent\": 1500000,\n        \"remaining\": 1500000,\n        \"categories_at_risk\": 1,\n        \"categories_overspent\": 0\n      },\n      \"at_risk\": []\n    },\n    \"streak\": {},\n    \"recent_transactions\": [],\n    \"currency\": \"IDR\"\n  }\n}"
+            }
+          ]
         }
       ]
     },
@@ -257,17 +379,21 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/categories?type=expense",
-              "host": ["{{baseUrl}}"],
-              "path": ["categories"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ],
               "query": [
                 {
                   "key": "type",
                   "value": "expense",
-                  "description": "Filter by type: income or expense (optional)"
+                  "description": "Optional: income or expense"
                 }
               ]
             },
-            "description": "Get all user categories with optional type filter"
+            "description": "List default and user categories. Response uses Laravel Resource Collection: { data: [...] }."
           },
           "response": []
         },
@@ -287,14 +413,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Groceries\",\n  \"type\": \"expense\",\n  \"icon\": \"shopping-cart\",\n  \"color\": \"#FF6B6B\",\n  \"budget_default\": 2000000\n}"
+              "raw": "{\n  \"name\": \"Groceries\",\n  \"type\": \"expense\",\n  \"icon\": \"FaShoppingCart\",\n  \"color\": \"#FF6B6B\",\n  \"budget_default\": 2000000\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/categories",
-              "host": ["{{baseUrl}}"],
-              "path": ["categories"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ]
             },
-            "description": "Create a new expenditure or income category"
+            "description": "Create custom category. Required: name, type."
           },
           "response": []
         },
@@ -310,10 +440,15 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/categories/{{categoryId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["categories", "{{categoryId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "{{categoryId}}"
+              ]
             },
-            "description": "Get specific category details"
+            "description": "Get category detail."
           },
           "response": []
         },
@@ -333,14 +468,19 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Groceries Updated\",\n  \"icon\": \"shopping-bag\",\n  \"color\": \"#4ECDC4\",\n  \"budget_default\": 2500000\n}"
+              "raw": "{\n  \"name\": \"Groceries Updated\",\n  \"type\": \"expense\",\n  \"icon\": \"FaShoppingBag\",\n  \"color\": \"#4ECDC4\",\n  \"budget_default\": 2500000\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/categories/{{categoryId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["categories", "{{categoryId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "{{categoryId}}"
+              ]
             },
-            "description": "Update category information"
+            "description": "Update category. Backend CategoryRequest still requires name and type."
           },
           "response": []
         },
@@ -356,10 +496,15 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/categories/{{categoryId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["categories", "{{categoryId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "{{categoryId}}"
+              ]
             },
-            "description": "Delete a category"
+            "description": "Delete category. Returns 409 if category has transactions."
           },
           "response": []
         }
@@ -380,22 +525,26 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/transactions?per_page=15&page=1",
-              "host": ["{{baseUrl}}"],
-              "path": ["transactions"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "transactions"
+              ],
               "query": [
                 {
                   "key": "per_page",
                   "value": "15",
-                  "description": "Number of items per page (optional)"
+                  "description": "Optional, default 15"
                 },
                 {
                   "key": "page",
                   "value": "1",
-                  "description": "Page number (optional)"
+                  "description": "Optional"
                 }
               ]
             },
-            "description": "Get paginated list of user transactions"
+            "description": "Get paginated transactions. Response includes success, data, links, and meta."
           },
           "response": []
         },
@@ -415,14 +564,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"amount\": 150000,\n  \"type\": \"expense\",\n  \"category_id\": \"{{categoryId}}\",\n  \"date\": \"2024-06-05\",\n  \"note\": \"Weekly groceries shopping\",\n  \"photo_url\": \"https://example.com/receipt.jpg\",\n  \"location_name\": \"Supermarket ABC\"\n}"
+              "raw": "{\n  \"amount\": 150000,\n  \"type\": \"expense\",\n  \"category_id\": \"{{categoryId}}\",\n  \"date\": \"2026-06-06\",\n  \"note\": \"Weekly groceries shopping\",\n  \"photo_url\": \"https://example.com/receipt.jpg\",\n  \"location_name\": \"Supermarket ABC\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/transactions",
-              "host": ["{{baseUrl}}"],
-              "path": ["transactions"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "transactions"
+              ]
             },
-            "description": "Create a new transaction (income or expense)"
+            "description": "Create transaction. Required: amount, type, category_id. date is nullable."
           },
           "response": []
         },
@@ -438,10 +591,15 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/transactions/{{transactionId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["transactions", "{{transactionId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "transactions",
+                "{{transactionId}}"
+              ]
             },
-            "description": "Get specific transaction details"
+            "description": "Get transaction detail with category."
           },
           "response": []
         },
@@ -461,14 +619,19 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"amount\": 175000,\n  \"type\": \"expense\",\n  \"category_id\": \"{{categoryId}}\",\n  \"date\": \"2024-06-05\",\n  \"note\": \"Weekly groceries shopping updated\",\n  \"photo_url\": \"https://example.com/receipt-updated.jpg\",\n  \"location_name\": \"Supermarket ABC\"\n}"
+              "raw": "{\n  \"amount\": 175000,\n  \"type\": \"expense\",\n  \"category_id\": \"{{categoryId}}\",\n  \"date\": \"2026-06-06\",\n  \"note\": \"Weekly groceries shopping updated\",\n  \"photo_url\": \"https://example.com/receipt-updated.jpg\",\n  \"location_name\": \"Supermarket ABC\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/transactions/{{transactionId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["transactions", "{{transactionId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "transactions",
+                "{{transactionId}}"
+              ]
             },
-            "description": "Update transaction information"
+            "description": "Update transaction. Backend uses the same required validation as create."
           },
           "response": []
         },
@@ -484,15 +647,20 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/transactions/{{transactionId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["transactions", "{{transactionId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "transactions",
+                "{{transactionId}}"
+              ]
             },
-            "description": "Delete a transaction"
+            "description": "Delete transaction."
           },
           "response": []
         },
         {
-          "name": "Transaction Summary by Category",
+          "name": "Transaction Summary",
           "request": {
             "method": "GET",
             "header": [
@@ -503,10 +671,16 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/transactions/summary/by-category",
-              "host": ["{{baseUrl}}"],
-              "path": ["transactions", "summary", "by-category"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "transactions",
+                "summary",
+                "by-category"
+              ]
             },
-            "description": "Get transaction summary grouped by category"
+            "description": "Get monthly summary. The response data contains total_income, total_expense, balance, savings_rate, top_categories, and transaction_count."
           },
           "response": []
         }
@@ -526,18 +700,22 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/budgets?month_year=2024-06",
-              "host": ["{{baseUrl}}"],
-              "path": ["budgets"],
+              "raw": "{{baseUrl}}/budgets?month_year=2026-06",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "budgets"
+              ],
               "query": [
                 {
                   "key": "month_year",
-                  "value": "2024-06",
-                  "description": "Filter by month in format YYYY-MM (optional)"
+                  "value": "2026-06",
+                  "description": "Optional, format YYYY-MM"
                 }
               ]
             },
-            "description": "Get paginated list of user budgets with optional month filter"
+            "description": "List budgets. Response uses Laravel Resource Collection."
           },
           "response": []
         },
@@ -553,10 +731,15 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/budgets/current",
-              "host": ["{{baseUrl}}"],
-              "path": ["budgets", "current"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "budgets",
+                "current"
+              ]
             },
-            "description": "Get budget status for current month"
+            "description": "Get current month budget summary with data.overall and data.budgets."
           },
           "response": []
         },
@@ -576,14 +759,18 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"category_id\": \"{{categoryId}}\",\n  \"amount\": 5000000,\n  \"month_year\": \"2024-06\"\n}"
+              "raw": "{\n  \"category_id\": \"{{categoryId}}\",\n  \"month_year\": \"2026-06\",\n  \"limit_amount\": 5000000\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/budgets",
-              "host": ["{{baseUrl}}"],
-              "path": ["budgets"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "budgets"
+              ]
             },
-            "description": "Create a budget for specific category and month"
+            "description": "Create budget. Backend expects limit_amount, not amount."
           },
           "response": []
         },
@@ -599,10 +786,15 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/budgets/{{budgetId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["budgets", "{{budgetId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "budgets",
+                "{{budgetId}}"
+              ]
             },
-            "description": "Get specific budget details"
+            "description": "Get budget detail."
           },
           "response": []
         },
@@ -622,14 +814,19 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"amount\": 6000000\n}"
+              "raw": "{\n  \"category_id\": \"{{categoryId}}\",\n  \"month_year\": \"2026-06\",\n  \"limit_amount\": 6000000\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/budgets/{{budgetId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["budgets", "{{budgetId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "budgets",
+                "{{budgetId}}"
+              ]
             },
-            "description": "Update budget amount"
+            "description": "Update budget. Backend UpdateBudgetRequest requires category_id, month_year, and limit_amount."
           },
           "response": []
         },
@@ -645,10 +842,15 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/budgets/{{budgetId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["budgets", "{{budgetId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "budgets",
+                "{{budgetId}}"
+              ]
             },
-            "description": "Delete a budget"
+            "description": "Delete budget."
           },
           "response": []
         }
@@ -669,10 +871,15 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/reports/weekly",
-              "host": ["{{baseUrl}}"],
-              "path": ["reports", "weekly"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "weekly"
+              ]
             },
-            "description": "Get weekly financial report"
+            "description": "Get weekly financial report JSON."
           },
           "response": []
         },
@@ -688,10 +895,15 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/reports/monthly",
-              "host": ["{{baseUrl}}"],
-              "path": ["reports", "monthly"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "monthly"
+              ]
             },
-            "description": "Get monthly financial report"
+            "description": "Get monthly financial report JSON."
           },
           "response": []
         },
@@ -706,23 +918,38 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/reports/custom?start_date=2024-06-01&end_date=2024-06-30",
-              "host": ["{{baseUrl}}"],
-              "path": ["reports", "custom"],
+              "raw": "{{baseUrl}}/reports/custom?start_date=2026-06-01&end_date=2026-06-30&type=both&include_charts=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "custom"
+              ],
               "query": [
                 {
                   "key": "start_date",
-                  "value": "2024-06-01",
-                  "description": "Start date in format YYYY-MM-DD"
+                  "value": "2026-06-01",
+                  "description": "Required"
                 },
                 {
                   "key": "end_date",
-                  "value": "2024-06-30",
-                  "description": "End date in format YYYY-MM-DD"
+                  "value": "2026-06-30",
+                  "description": "Required, must be after or equal to start_date"
+                },
+                {
+                  "key": "type",
+                  "value": "both",
+                  "description": "Optional: income, expense, both"
+                },
+                {
+                  "key": "include_charts",
+                  "value": "true",
+                  "description": "Optional boolean"
                 }
               ]
             },
-            "description": "Get financial report for custom date range"
+            "description": "Get financial report for custom date range."
           },
           "response": []
         },
@@ -742,14 +969,19 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"start_date\": \"2024-06-01\",\n  \"end_date\": \"2024-06-30\",\n  \"format\": \"pdf\"\n}"
+              "raw": "{\n  \"start_date\": \"2026-06-01\",\n  \"end_date\": \"2026-06-30\",\n  \"format\": \"csv\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/reports/export",
-              "host": ["{{baseUrl}}"],
-              "path": ["reports", "export"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "reports",
+                "export"
+              ]
             },
-            "description": "Export report to file (pdf/xlsx)"
+            "description": "Export report as file stream. Valid format: pdf, excel, csv. Response is not JSON."
           },
           "response": []
         }
@@ -770,10 +1002,14 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/badges",
-              "host": ["{{baseUrl}}"],
-              "path": ["badges"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "badges"
+              ]
             },
-            "description": "Get all badges earned by current user"
+            "description": "Get earned badges. Items include awarded_at."
           },
           "response": []
         },
@@ -789,10 +1025,15 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/badges/all",
-              "host": ["{{baseUrl}}"],
-              "path": ["badges", "all"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "badges",
+                "all"
+              ]
             },
-            "description": "Get all available badges with user progress status"
+            "description": "Get all badges with is_earned status."
           },
           "response": []
         }
@@ -812,18 +1053,22 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/insights?type=spending",
-              "host": ["{{baseUrl}}"],
-              "path": ["insights"],
+              "raw": "{{baseUrl}}/insights?type=weekly",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "insights"
+              ],
               "query": [
                 {
                   "key": "type",
-                  "value": "spending",
-                  "description": "Filter by type (optional)"
+                  "value": "weekly",
+                  "description": "Optional period_type: daily, weekly, monthly"
                 }
               ]
             },
-            "description": "Get user insights with optional type filter"
+            "description": "List insights. Response uses Laravel Resource Collection. Query type filters period_type."
           },
           "response": []
         },
@@ -839,10 +1084,15 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/insights/latest",
-              "host": ["{{baseUrl}}"],
-              "path": ["insights", "latest"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "insights",
+                "latest"
+              ]
             },
-            "description": "Get latest unread insight"
+            "description": "Get latest unread insight or null."
           },
           "response": []
         },
@@ -862,14 +1112,19 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{}"
+              "raw": "{\n  \"period_type\": \"weekly\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/insights/generate",
-              "host": ["{{baseUrl}}"],
-              "path": ["insights", "generate"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "insights",
+                "generate"
+              ]
             },
-            "description": "Generate new insights based on user transaction data"
+            "description": "Queue insight generation. period_type defaults to weekly."
           },
           "response": []
         },
@@ -885,10 +1140,16 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/insights/{{insightId}}/read",
-              "host": ["{{baseUrl}}"],
-              "path": ["insights", "{{insightId}}", "read"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "insights",
+                "{{insightId}}",
+                "read"
+              ]
             },
-            "description": "Mark specific insight as read"
+            "description": "Mark insight as read. Response returns success and message only."
           },
           "response": []
         }
@@ -909,22 +1170,26 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/notifications?per_page=20&page=1",
-              "host": ["{{baseUrl}}"],
-              "path": ["notifications"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications"
+              ],
               "query": [
                 {
                   "key": "per_page",
                   "value": "20",
-                  "description": "Number of items per page (optional)"
+                  "description": "Optional, default 20"
                 },
                 {
                   "key": "page",
                   "value": "1",
-                  "description": "Page number (optional)"
+                  "description": "Optional"
                 }
               ]
             },
-            "description": "Get paginated list of user notifications"
+            "description": "Get paginated notifications. Notification resource uses body, not message."
           },
           "response": []
         },
@@ -940,10 +1205,15 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/notifications/unread",
-              "host": ["{{baseUrl}}"],
-              "path": ["notifications", "unread"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "unread"
+              ]
             },
-            "description": "Get all unread notifications"
+            "description": "Get unread notifications. Response uses Laravel Resource Collection."
           },
           "response": []
         },
@@ -959,10 +1229,15 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/notifications/unread-count",
-              "host": ["{{baseUrl}}"],
-              "path": ["notifications", "unread-count"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "unread-count"
+              ]
             },
-            "description": "Get count of unread notifications"
+            "description": "Get unread notification count."
           },
           "response": []
         },
@@ -978,10 +1253,16 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/notifications/{{notificationId}}/read",
-              "host": ["{{baseUrl}}"],
-              "path": ["notifications", "{{notificationId}}", "read"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "{{notificationId}}",
+                "read"
+              ]
             },
-            "description": "Mark specific notification as read"
+            "description": "Mark one notification as read. Response returns success and message only."
           },
           "response": []
         },
@@ -997,10 +1278,15 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/notifications/read-all",
-              "host": ["{{baseUrl}}"],
-              "path": ["notifications", "read-all"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "read-all"
+              ]
             },
-            "description": "Mark all notifications as read for current user"
+            "description": "Mark all notifications as read."
           },
           "response": []
         }
@@ -1015,6 +1301,11 @@
     },
     {
       "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
       "value": "",
       "type": "string"
     },
