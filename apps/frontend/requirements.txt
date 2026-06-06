@@ -1,0 +1,27 @@
+# Duitku Frontend Requirements
+
+# Core Dependencies
+axios
+swr
+zustand
+zod
+react-hook-form
+@hookform/resolvers
+date-fns
+recharts
+sonner
+
+# Dev Dependencies
+@types/node
+
+# Shadcn Components
+button
+card
+form
+input
+dialog
+label
+select
+table
+tabs
+dropdown-menu
