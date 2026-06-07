@@ -3,10 +3,12 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Models\Category;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\PersonalAccessToken; 
+use Illuminate\Support\Facades\DB;
 
 /**
  * AuthService
@@ -39,6 +41,9 @@ class AuthService
             ]);
         }
 
+        // Set default template
+        $template = $data['onboarding_template'] ?? 'standard';
+
         // Buat pengguna baru dengan data pemberian nilai default jika tidak ada
         $user = User::create([
             'id' => Str::uuid(),
@@ -46,9 +51,14 @@ class AuthService
             'email' => $email,
             'password' => Hash::make($data['password']),
             'currency_code' => $data['currency_code'] ?? 'IDR',
-            'onboarding_template' => $data['onboarding_template'] ?? 'standard',
+            'onboarding_template' => $template,
             'initial_balance' => $data['initial_balance'] ?? 0,
+            'streak_days' => 0, 
+            'is_premium' => false, 
         ]);
+
+        // Buat kategori default berdasarkan template
+        $this->createDefaultCategories($user, $template);
 
         // Buat token autentikasi untuk sesi pertama
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -57,6 +67,146 @@ class AuthService
             'user' => $user,
             'token' => $token
         ];
+    }
+
+    /**
+     * createDefaultCategories
+     * 
+     * Membuat kategori default berdasarkan template onboarding yang dipilih.
+     * 
+     * @param User $user Pengguna yang akan dibuatkan kategorinya
+     * @param string $template Template onboarding (standard, freelancer, mahasiswa)
+     * @return void
+     */
+    protected function createDefaultCategories(User $user, string $template): void
+    {
+        $categories = $this->getCategoriesByTemplate($template);
+        
+        foreach ($categories as $category) {
+            Category::create([
+                'user_id' => $user->id,
+                'name' => $category['name'],
+                'type' => $category['type'],
+                'icon' => $category['icon'],
+                'color' => $category['color'],
+                'is_default' => $category['is_default'] ?? false,
+                'budget_default' => $category['budget_default'] ?? null,
+            ]);
+        }
+    }
+
+    /**
+     * getCategoriesByTemplate
+     * 
+     * Mendapatkan daftar kategori berdasarkan template yang dipilih.
+     * 
+     * @param string $template Template onboarding (standard, freelancer, mahasiswa)
+     * @return array Daftar kategori yang akan dibuat
+     */
+    protected function getCategoriesByTemplate(string $template): array
+    {
+        $templates = [
+            'standard' => [
+                // Income categories
+                ['name' => 'Gaji', 'type' => 'income', 'icon' => 'FaMoneyBill', 'color' => '#4CAF50', 'is_default' => false],
+                ['name' => 'Bonus', 'type' => 'income', 'icon' => 'FaGift', 'color' => '#FFC107', 'is_default' => false],
+                // Expense categories
+                ['name' => 'Makan & Minum', 'type' => 'expense', 'icon' => 'FaUtensils', 'color' => '#FF9800', 'is_default' => false],
+                ['name' => 'Transportasi', 'type' => 'expense', 'icon' => 'FaCar', 'color' => '#2196F3', 'is_default' => false],
+                ['name' => 'Belanja', 'type' => 'expense', 'icon' => 'FaShoppingBag', 'color' => '#E91E63', 'is_default' => false],
+                ['name' => 'Tagihan', 'type' => 'expense', 'icon' => 'FaFileInvoice', 'color' => '#F44336', 'is_default' => false],
+                ['name' => 'Hiburan', 'type' => 'expense', 'icon' => 'FaTicketAlt', 'color' => '#9C27B0', 'is_default' => false],
+                ['name' => 'Kesehatan', 'type' => 'expense', 'icon' => 'FaHeartbeat', 'color' => '#00BCD4', 'is_default' => false],
+            ],
+            'mahasiswa' => [
+                // Income categories
+                ['name' => 'Uang Saku', 'type' => 'income', 'icon' => 'FaMoneyBill', 'color' => '#4CAF50', 'is_default' => false],
+                ['name' => 'Part Time', 'type' => 'income', 'icon' => 'FaBriefcase', 'color' => '#2196F3', 'is_default' => false],
+                ['name' => 'Beasiswa', 'type' => 'income', 'icon' => 'FaGraduationCap', 'color' => '#9C27B0', 'is_default' => false],
+                // Expense categories
+                ['name' => 'Makan', 'type' => 'expense', 'icon' => 'FaUtensils', 'color' => '#FF9800', 'is_default' => false],
+                ['name' => 'Transport', 'type' => 'expense', 'icon' => 'FaBus', 'color' => '#2196F3', 'is_default' => false],
+                ['name' => 'Buku & Alat Tulis', 'type' => 'expense', 'icon' => 'FaBook', 'color' => '#9C27B0', 'is_default' => false],
+                ['name' => 'Kos', 'type' => 'expense', 'icon' => 'FaHome', 'color' => '#795548', 'is_default' => false],
+                ['name' => 'Hiburan', 'type' => 'expense', 'icon' => 'FaGamepad', 'color' => '#E91E63', 'is_default' => false],
+                ['name' => 'Tabungan', 'type' => 'expense', 'icon' => 'FaPiggyBank', 'color' => '#FFC107', 'is_default' => false],
+            ],
+            'freelancer' => [
+                // Income categories
+                ['name' => 'Pendapatan Proyek', 'type' => 'income', 'icon' => 'FaBriefcase', 'color' => '#4CAF50', 'is_default' => false],
+                ['name' => 'Passive Income', 'type' => 'income', 'icon' => 'FaChartLine', 'color' => '#8BC34A', 'is_default' => false],
+                ['name' => 'Konsultasi', 'type' => 'income', 'icon' => 'FaUsers', 'color' => '#00BCD4', 'is_default' => false],
+                // Expense categories
+                ['name' => 'Operasional', 'type' => 'expense', 'icon' => 'FaLaptop', 'color' => '#FF9800', 'is_default' => false],
+                ['name' => 'Pajak', 'type' => 'expense', 'icon' => 'FaFileInvoice', 'color' => '#F44336', 'is_default' => false],
+                ['name' => 'Marketing', 'type' => 'expense', 'icon' => 'FaBullhorn', 'color' => '#9C27B0', 'is_default' => false],
+                ['name' => 'Software & Tools', 'type' => 'expense', 'icon' => 'FaCode', 'color' => '#2196F3', 'is_default' => false],
+                ['name' => 'Pengembangan Skill', 'type' => 'expense', 'icon' => 'FaGraduationCap', 'color' => '#673AB7', 'is_default' => false],
+            ],
+        ];
+
+        // Default categories untuk semua template
+        $defaultCategories = [
+            ['name' => 'Pendapatan Lain', 'type' => 'income', 'icon' => 'FaPlusCircle', 'color' => '#8BC34A', 'is_default' => true],
+            ['name' => 'Pengeluaran Lain', 'type' => 'expense', 'icon' => 'FaMinusCircle', 'color' => '#FF5722', 'is_default' => true],
+        ];
+
+        // Ambil template categories atau fallback ke standard
+        $templateCategories = $templates[$template] ?? $templates['standard'];
+        
+        // Merge dengan default categories
+        return array_merge($templateCategories, $defaultCategories);
+    }
+
+    /**
+     * createInitialBalanceTransaction
+     * 
+     * Membuat transaksi untuk saldo awal pengguna.
+     * 
+     * @param User $user Pengguna yang memiliki saldo awal
+     * @param float $amount Jumlah saldo awal
+     * @return void
+     */
+    protected function createInitialBalanceTransaction(User $user, float $amount): void
+    {
+        // CEK: Apakah sudah ada transaksi saldo awal?
+        $existingTransaction = DB::table('transactions')
+            ->where('user_id', $user->id)
+            ->where('note', 'Saldo awal')
+            ->where('type', 'income')
+            ->first();
+        
+        // Jika sudah ada, jangan buat lagi
+        if ($existingTransaction) {
+            return;
+        }
+        
+        // Cari atau buat kategori Saldo Awal
+        $category = Category::where('user_id', $user->id)
+            ->where('name', 'Saldo Awal')
+            ->where('type', 'income')
+            ->first();
+        
+        if (!$category) {
+            $category = Category::create([
+                'user_id' => $user->id,
+                'name' => 'Saldo Awal',
+                'type' => 'income',
+                'icon' => 'FaWallet',
+                'color' => '#4CAF50',
+                'is_default' => true,
+            ]);
+        }
+
+        // Buat transaksi
+        $user->transactions()->create([
+            'id' => \Illuminate\Support\Str::uuid(),
+            'category_id' => $category->id,
+            'amount' => $amount,
+            'type' => 'income',
+            'date' => now(),
+            'note' => 'Saldo awal',
+        ]);
     }
 
     /**
@@ -132,8 +282,19 @@ class AuthService
             'currency_code',
             'avatar',
             'settings',
-            'password'
+            'password',
+            'onboarding_template'
         ])->toArray();
+
+        // Validasi onboarding_template jika ada
+        if (isset($allowed['onboarding_template'])) {
+            $validTemplates = ['standard', 'freelancer', 'mahasiswa'];
+            if (!in_array($allowed['onboarding_template'], $validTemplates)) {
+                throw ValidationException::withMessages([
+                    'onboarding_template' => ['Template harus standard, freelancer, atau mahasiswa'],
+                ]);
+            }
+        }
 
         // Validasi dan normalize email jika ada
         if (isset($allowed['email'])) {

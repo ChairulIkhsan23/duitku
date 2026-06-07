@@ -19,8 +19,9 @@ class UserResource extends JsonResource
             'currency_code' => $this->currency_code, // Mata uang yang digunakan user
             'initial_balance' => (float) $this->initial_balance, // saldo awal
             'current_balance' => (float) $this->current_balance, // saldo saat ini
-            'streak_days' => $this->streak_days, // jumlah hari streak transaksi
-            'is_premium' => $this->is_premium, // status premium user
+            'onboarding_template' => $this->onboarding_template, // template onboarding yang dipilih user
+            'streak_days' => (int) ($this->streak_days ?? 0), // jumlah hari streak transaksi
+            'is_premium' => (bool) ($this->is_premium ?? false), // status premium user
             'premium_until' => $this->premium_until?->format('Y-m-d'), // masa aktif premium
             'avatar' => $this->avatar, // avatar user
             'settings' => $this->settings, // pengaturan user (JSON)

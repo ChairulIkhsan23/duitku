@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -17,6 +18,19 @@ class User extends Authenticatable
      */
     protected $keyType = 'string';
     public $incrementing = false;
+
+
+    /**
+     * Default values untuk attribute
+     */
+    protected $attributes = [
+        'streak_days' => 0,
+        'is_premium' => false,
+        'currency_code' => 'IDR',
+        'initial_balance' => 0,
+        'onboarding_template' => 'standard',
+    ];
+
 
     /**
      * Field yang boleh di-mass assign
@@ -47,6 +61,7 @@ class User extends Authenticatable
         'remember_token'
     ];
 
+    
     /**
      * Casting attribute ke tipe data tertentu
      */
@@ -139,16 +154,16 @@ class User extends Authenticatable
     /**
      * Hitung saldo saat ini (initial + income - expense)
      */
-    public function getCurrentBalanceAttribute()
+    public function getCurrentBalanceAttribute(): float
     {
         $totalIncome = $this->transactions()
-            ->where('type', 'income')
-            ->sum('amount');
-
+        ->where('type', 'income')
+        ->sum('amount');
+            
         $totalExpense = $this->transactions()
-            ->where('type', 'expense')
-            ->sum('amount');
-
-        return $this->initial_balance + $totalIncome - $totalExpense;
+        ->where('type', 'expense')
+        ->sum('amount');
+        
+        return $this->initial_balance + $totalIncome - $totalExpense;   
     }
 }
